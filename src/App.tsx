@@ -6,11 +6,11 @@ import AuthLayout from './pages/auth/AuthLayout';
 const App = () => {
 	return (
 		<Routes>
-			<Route path='/' element='<div>App</div>' />
-      <Route element={<AuthLayout />}>
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-      </Route>
+			<Route path="/" element="<div>App</div>" />
+			<Route element={<AuthLayout />}>
+				<Route path="login" element={<Login />} />
+				<Route path="register" element={<Register />} />
+			</Route>
 		</Routes>
 	);
 };
