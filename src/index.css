@@ -1,8 +1,41 @@
 @import 'tailwindcss';
 
+@theme {
+	--color-brand: #3ea692;
+}
+
 * {
-	margin: 0;
-	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Poppins', sans-serif;
+}
+
+@layer components {
+	.btn-primary {
+		border-radius: calc(infinity * 1px);
+		background-color: var(--color-violet-500);
+		padding-inline: --spacing(5);
+		padding-block: --spacing(2);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-white);
+		box-shadow: var(--shadow-md);
+
+		&:hover {
+			@media (hover: hover) {
+				background-color: var(--color-violet-700);
+			}
+		}
+	}
+
+	.custom-input {
+		border: 1px solid #b0b0b0;
+		padding: 0.25rem 0.75rem;
+		border-radius: 0.25rem;
+		transition: border-color 0.2s ease-in-out;
+
+		&:focus,
+		&:hover {
+			border-color: #404040;
+			outline: none;
+		}
+	}
 }
