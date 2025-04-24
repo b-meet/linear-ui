@@ -4,5 +4,6 @@ export const ROUTES = {
 	DASHBOARD: '/dashboard',
 	PROFILE: '/profile',
 	SETTINGS: '/settings',
+	CLAIMS: '/claims',
 	NOT_FOUND: '*',
 };

@@ -2,6 +2,7 @@ import {Link} from 'react-router';
 import {ROUTES} from '../../routing/routes';
 import {FormEvent, useState} from 'react';
 import {FiEye, FiEyeOff} from 'react-icons/fi';
+import {useNavigate} from 'react-router';
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +10,7 @@ const Login = () => {
 	const [otp, setOtp] = useState('');
 	const [user, setUser] = useState({email: '', password: ''});
 	const [errors, setErrors] = useState({email: '', password: ''});
+	const navigate = useNavigate();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const {value, name} = e.target;
@@ -39,6 +41,7 @@ const Login = () => {
 
 		if (valid) {
 			console.log(user, 'submit');
+			navigate('/claims');
 		}
 	};
 
