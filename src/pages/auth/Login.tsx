@@ -8,15 +8,38 @@ const Login = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [otp, setOtp] = useState('');
 	const [user, setUser] = useState({email: '', password: ''});
+	const [errors, setErrors] = useState({email: '', password: ''});
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const {value, name} = e.target;
 		setUser({...user, [name]: value});
+		setErrors({...errors, [name]: ''}); // Clear error on input
 	};
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		console.log('submit');
+
+		let valid = true;
+		const newErrors = {...errors};
+
+		if (!user.email) {
+			newErrors.email = 'Email is required';
+			valid = false;
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+			newErrors.email = 'Invalid email format';
+			valid = false;
+		}
+
+		if (!user.password) {
+			newErrors.password = 'Password is required';
+			valid = false;
+		}
+
+		setErrors(newErrors);
+
+		if (valid) {
+			console.log(user, 'submit');
+		}
 	};
 
 	return (
@@ -27,8 +50,8 @@ const Login = () => {
 				</header>
 				<p className="text-center text-lg">Sign in to your account</p>
 				<form className="flex flex-col gap-2 items-end" onSubmit={handleSubmit}>
-					<div className="flex flex-col gap-4 w-full">
-						<label htmlFor="email" className="flex flex-col gap-1">
+					<div className="flex flex-col gap-3 w-full">
+						<label htmlFor="email" className="flex flex-col">
 							<span className="text-sm">Email</span>
 							<input
 								id="email"
@@ -37,8 +60,11 @@ const Login = () => {
 								className="custom-input"
 								onChange={handleChange}
 							/>
+							{errors.email && (
+								<p className="text-red-500 text-xs mt-1">{errors.email}</p>
+							)}
 						</label>
-						<label htmlFor="password" className="flex flex-col gap-1 relative">
+						<label htmlFor="password" className="flex flex-col relative">
 							<span className="text-sm">Password</span>
 							<input
 								id="password"
@@ -47,8 +73,11 @@ const Login = () => {
 								className="custom-input pr-10"
 								onChange={handleChange}
 							/>
+							{errors.password && (
+								<p className="text-red-500 text-xs mt-1">{errors.password}</p>
+							)}
 							<span
-								className="absolute right-3 top-[34px] cursor-pointer text-gray-500"
+								className="absolute right-3 top-[30px] cursor-pointer text-gray-500"
 								onClick={() => setShowPassword((prev) => !prev)}
 							>
 								{showPassword ? <FiEyeOff /> : <FiEye />}
@@ -82,9 +111,11 @@ const Login = () => {
 				<button className="text-sm border border-[#707070] rounded-md py-1">
 					Google
 				</button>
-				<p className="text-sm text-center">
-					Don't have an account? <Link to={ROUTES.SIGNUP}>Sign up</Link>
-				</p>
+				<Link to={ROUTES.SIGNUP}>
+					<p className="text-sm text-center bg-slate-200 py-2 rounded-md">
+						Don't have an account? Sign up
+					</p>
+				</Link>
 			</div>
 
 			{/* forgot password */}
