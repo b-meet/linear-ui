@@ -4,10 +4,12 @@ import Register from './pages/auth/Register';
 import AuthLayout from './pages/auth/AuthLayout';
 import {ROUTES} from './routing/routes';
 import Claims from './pages/Claims';
-import ClaimsLayout from './pages/main/ClaimsLayout';
+import Dashboard from './pages/Dashboard';
+import Customers from './pages/Customers';
+import AppLayout from './pages/main/AppLayout';
 
 const App = () => {
-	const isAuthenticated = false;
+	const isAuthenticated = false; // Replace with actual authentication check
 
 	return (
 		<Routes>
@@ -25,8 +27,10 @@ const App = () => {
 				<Route path={ROUTES.LOGIN} element={<Login />} />
 				<Route path={ROUTES.SIGNUP} element={<Register />} />
 			</Route>
-			<Route path={ROUTES.CLAIMS} element={<ClaimsLayout />}>
-				<Route index element={<Claims />} />
+			<Route element={<AppLayout />}>
+				<Route path={ROUTES.CLAIMS} element={<Claims />} />
+				<Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+				<Route path={ROUTES.CUSTOMERS} element={<Customers />} />
 			</Route>
 		</Routes>
 	);

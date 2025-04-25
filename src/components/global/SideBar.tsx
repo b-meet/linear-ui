@@ -35,7 +35,7 @@ const SideBar = () => {
 			{/* Nav Links */}
 			<nav className="flex flex-col gap-1 text-sm">
 				<Link
-					to={ROUTES.DASHBOARD}
+					to={'/dashboard'}
 					className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition"
 				>
 					<MdOutlineSpaceDashboard className="text-xl" />
@@ -49,7 +49,7 @@ const SideBar = () => {
 					{isOpen && <span>Claims</span>}
 				</Link>
 				<Link
-					to={ROUTES.CUSTOMERS}
+					to={'/customers'}
 					className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition"
 				>
 					<FaRegUser className="text-xl" />

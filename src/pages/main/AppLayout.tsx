@@ -2,7 +2,7 @@ import {Outlet} from 'react-router';
 import SideBar from '../../components/global/SideBar';
 import Navbar from '../../components/global/Navbar';
 
-const ClaimsLayout = () => {
+const AppLayout = () => {
 	return (
 		<div className="flex h-screen">
 			<SideBar />
@@ -16,4 +16,4 @@ const ClaimsLayout = () => {
 	);
 };
 
-export default ClaimsLayout;
+export default AppLayout;
