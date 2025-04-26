@@ -7,6 +7,7 @@ import Claims from './pages/Claims';
 import Dashboard from './pages/Dashboard';
 import Customers from './pages/Customers';
 import AppLayout from './pages/main/AppLayout';
+import AddClaims from './pages/AddClaims';
 
 const App = () => {
 	const isAuthenticated = false; // Replace with actual authentication check
@@ -31,6 +32,7 @@ const App = () => {
 				<Route path={ROUTES.CLAIMS} element={<Claims />} />
 				<Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
 				<Route path={ROUTES.CUSTOMERS} element={<Customers />} />
+				<Route path={`${ROUTES.ADD_CLAIMS}/:id`} element={<AddClaims />} />
 			</Route>
 		</Routes>
 	);

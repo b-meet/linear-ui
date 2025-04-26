@@ -1,5 +1,11 @@
+import ResultTable from '../components/claims/ResultTable';
+
 const Claims = () => {
-	return <div>Claims</div>;
+	return (
+		<>
+			<ResultTable />
+		</>
+	);
 };
 
 export default Claims;

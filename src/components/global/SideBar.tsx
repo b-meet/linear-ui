@@ -1,16 +1,40 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import {API_BASE_URL} from '../../utility/environment';
 import {FaPlus, FaRegUser} from 'react-icons/fa';
 import {MdOutlineSpaceDashboard} from 'react-icons/md';
 import {GoSidebarCollapse, GoSidebarExpand} from 'react-icons/go';
 import {MdOutlineLibraryBooks} from 'react-icons/md';
+import {useNavigate, useLocation} from 'react-router';
 
 import {Link} from 'react-router';
 import {ROUTES} from '../../routing/routes';
 
 const SideBar = () => {
 	const [isOpen, setIsOpen] = useState(true);
+	const navigate = useNavigate();
+	const location = useLocation();
+	const [addClaimId, setAddClaimId] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (addClaimId) {
+			navigate(`/add-claim/${addClaimId}`);
+		}
+	}, [addClaimId, navigate]);
 
 	const toggleSidebar = () => setIsOpen(!isOpen);
+
+	const addClaim = async () => {
+		if (!location.pathname.includes(ROUTES.ADD_CLAIMS)) {
+			try {
+				const response = await axios.get(`${API_BASE_URL}/api/claims/addClaim`);
+				const data = response.data;
+				setAddClaimId(data.id.toString());
+			} catch (error) {
+				console.error('Error fetching claim ID:', error);
+			}
+		}
+	};
 
 	return (
 		<div
@@ -27,7 +51,10 @@ const SideBar = () => {
 				)}
 			</button>
 
-			<button className="flex items-center gap-3 bg-brand hover:bg-brand-darker text-white text-sm px-4 py-3 rounded-md mb-4 transition">
+			<button
+				onClick={addClaim}
+				className="flex items-center gap-3 bg-brand hover:bg-brand-darker text-white text-sm px-4 py-3 rounded-md mb-4 transition"
+			>
 				<FaPlus />
 				{isOpen && <span className="whitespace-nowrap">New Claim</span>}
 			</button>
