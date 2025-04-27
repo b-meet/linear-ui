@@ -1,14 +1,14 @@
 import {useState, useEffect} from 'react';
-import axios from 'axios';
-import {API_BASE_URL} from '../../utility/environment';
 import {FaPlus, FaRegUser} from 'react-icons/fa';
 import {MdOutlineSpaceDashboard} from 'react-icons/md';
 import {GoSidebarCollapse, GoSidebarExpand} from 'react-icons/go';
 import {MdOutlineLibraryBooks} from 'react-icons/md';
 import {useNavigate, useLocation} from 'react-router';
-
+import {api} from '../../utility/apiClient';
 import {Link} from 'react-router';
 import {ROUTES} from '../../routing/routes';
+import {toast} from 'react-toastify';
+import {API_ROUTES} from '../../utility/constant';
 
 const SideBar = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -18,7 +18,7 @@ const SideBar = () => {
 
 	useEffect(() => {
 		if (addClaimId) {
-			navigate(`/add-claim/${addClaimId}`);
+			navigate(ROUTES.ADD_CLAIMS + '/' + addClaimId);
 		}
 	}, [addClaimId, navigate]);
 
@@ -27,11 +27,11 @@ const SideBar = () => {
 	const addClaim = async () => {
 		if (!location.pathname.includes(ROUTES.ADD_CLAIMS)) {
 			try {
-				const response = await axios.get(`${API_BASE_URL}/api/claims/addClaim`);
-				const data = response.data;
-				setAddClaimId(data.id.toString());
+				const data = await api.get<{data: string}>(API_ROUTES.ADD_CLAIMS);
+				setAddClaimId(data.data.toString());
 			} catch (error) {
-				console.error('Error fetching claim ID:', error);
+				console.error('Error initiating new claim in SideBar:', error);
+				toast.error('Failed to start a new claim. Please try again.');
 			}
 		}
 	};
@@ -42,7 +42,7 @@ const SideBar = () => {
 		>
 			<button
 				onClick={toggleSidebar}
-				className="text-gray-400 hover:text-gray-600 mb-6"
+				className="text-gray-400 hover:text-gray-600 mb-6 max-w-max cursor-pointer"
 			>
 				{isOpen ? (
 					<GoSidebarExpand size={24} />
@@ -53,7 +53,7 @@ const SideBar = () => {
 
 			<button
 				onClick={addClaim}
-				className="flex items-center gap-3 bg-brand hover:bg-brand-darker text-white text-sm px-4 py-3 rounded-md mb-4 transition"
+				className="flex items-center gap-3 bg-brand hover:bg-brand-darker text-white text-sm px-4 py-3 rounded-md mb-4 cursor-pointer transition"
 			>
 				<FaPlus />
 				{isOpen && <span className="whitespace-nowrap">New Claim</span>}

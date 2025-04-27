@@ -8,7 +8,7 @@ const AppLayout = () => {
 			<SideBar />
 			<section className="flex flex-col w-full">
 				<Navbar />
-				<div className="flex-1 p-4 bg-[#F5F6FA]">
+				<div className="flex-1 p-4 bg-[#F9F9F9]">
 					<Outlet />
 				</div>
 			</section>
