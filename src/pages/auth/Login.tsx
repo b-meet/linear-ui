@@ -1,11 +1,11 @@
 import {FormEvent, useState} from 'react';
 import {FiEye, FiEyeOff} from 'react-icons/fi';
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import {ROUTES} from '../../routing/routes';
 import {API_ROUTES} from '../../utility/constant';
 import {apiUnAuth} from '../../api/services';
-import {ILoginResponse} from '../../redux/type';
 import {toast} from 'react-toastify';
+import {ILoginResponse} from '../../type';
 
 interface User {
 	email: string;
@@ -23,6 +23,7 @@ const Login = () => {
 	const [otp, setOtp] = useState('');
 	const [user, setUser] = useState<User>({email: '', password: ''});
 	const [errors, setErrors] = useState<Errors>({email: '', password: ''});
+	const navigate = useNavigate();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const {value, name} = e.target;
@@ -57,7 +58,10 @@ const Login = () => {
 				API_ROUTES.LOGIN,
 				user
 			);
-			toast(response.message || 'Login successful');
+			if (response.status === 200) {
+				navigate(ROUTES.DASHBOARD);
+			}
+			toast(response.message);
 		} catch (error: unknown) {
 			console.error(
 				(error as {response: {data: {message: string}}}).response?.data
@@ -82,9 +86,6 @@ const Login = () => {
 	return (
 		<>
 			<div className="shadow-sm py-4 px-8 rounded-md w-[400px] flex flex-col gap-4">
-				<header>
-					<h1 className="text-brand font-bold text-xl">LinearClaim</h1>
-				</header>
 				<p className="text-center text-lg">Sign in to your account</p>
 				<form className="flex flex-col gap-2 items-end" onSubmit={handleSubmit}>
 					<div className="flex flex-col gap-3 w-full">

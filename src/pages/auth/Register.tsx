@@ -1,15 +1,20 @@
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import {ROUTES} from '../../routing/routes';
 import {FormEvent, useState} from 'react';
 import {FiEye, FiEyeOff} from 'react-icons/fi';
+import {apiUnAuth} from '../../api/services';
+import {API_ROUTES} from '../../utility/constant';
+import {toast} from 'react-toastify';
+import {IRegisterResponse} from '../../type';
 
 const Register = () => {
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
-	const [user, setUser] = useState({email: '', password: '', companyName: ''});
+	const [user, setUser] = useState({email: '', password: '', name: ''});
 	const [errors, setErrors] = useState({
 		email: '',
 		password: '',
-		companyName: '',
+		name: '',
 	});
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,14 +23,36 @@ const Register = () => {
 		setErrors((prevErrors) => ({...prevErrors, [name]: ''})); // Clear error on input
 	};
 
+	const registerAPI = async (): Promise<void> => {
+		try {
+			const response = await apiUnAuth.post<unknown, IRegisterResponse>(
+				API_ROUTES.REGISTER,
+				user
+			);
+			if (response.status === 200) {
+				navigate(ROUTES.DASHBOARD);
+			}
+			toast(response.message);
+		} catch (error: unknown) {
+			console.error(
+				(error as {response: {data: {message: string}}}).response?.data
+					?.message || 'Login failed'
+			);
+			toast(
+				(error as {response: {data: {message: string}}}).response?.data
+					?.message || 'Login failed'
+			);
+		}
+	};
+
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		let valid = true;
 		const newErrors = {...errors};
 
-		if (!user.companyName) {
-			newErrors.companyName = 'Company Name is required';
+		if (!user.name) {
+			newErrors.name = 'Company Name is required';
 			valid = false;
 		}
 
@@ -45,32 +72,27 @@ const Register = () => {
 		setErrors(newErrors);
 
 		if (valid) {
-			console.log(user, 'submit');
+			registerAPI();
 		}
 	};
 
 	return (
 		<>
 			<div className="shadow-sm py-4 px-8 rounded-md w-[400px] flex flex-col gap-4">
-				<header>
-					<h1 className="text-brand font-bold text-xl">LinearClaim</h1>
-				</header>
 				<p className="text-center text-lg">Create your account</p>
 				<form className="flex flex-col gap-2 items-end" onSubmit={handleSubmit}>
 					<div className="flex flex-col gap-3 w-full">
-						<label htmlFor="companyName" className="flex flex-col">
+						<label htmlFor="name" className="flex flex-col">
 							<span className="text-sm">Company Name</span>
 							<input
-								id="companyName"
+								id="name"
 								type="text"
-								name="companyName"
+								name="name"
 								className="custom-input"
 								onChange={handleChange}
 							/>
-							{errors.companyName && (
-								<p className="text-red-500 text-xs mt-1">
-									{errors.companyName}
-								</p>
+							{errors.name && (
+								<p className="text-red-500 text-xs mt-1">{errors.name}</p>
 							)}
 						</label>
 						<label htmlFor="email" className="flex flex-col">
