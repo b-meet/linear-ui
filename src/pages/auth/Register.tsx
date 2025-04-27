@@ -5,7 +5,8 @@ import {FiEye, FiEyeOff} from 'react-icons/fi';
 import {apiUnAuth} from '../../api/services';
 import {API_ROUTES} from '../../utility/constant';
 import {toast} from 'react-toastify';
-import {IRegisterResponse} from '../../type';
+import {IRegisterResponse, STORAGE_SERVICES} from '../../type';
+import {storageServices} from '../../utility/storageServices';
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -31,6 +32,13 @@ const Register = () => {
 			);
 			if (response.status === 200) {
 				navigate(ROUTES.DASHBOARD);
+			}
+			if (response.data.token) {
+				storageServices.set(
+					STORAGE_SERVICES.LOCAL,
+					'authToken',
+					response.data.token
+				);
 			}
 			toast(response.message);
 		} catch (error: unknown) {

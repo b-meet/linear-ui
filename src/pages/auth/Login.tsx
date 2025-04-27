@@ -1,4 +1,6 @@
 import {FormEvent, useState} from 'react';
+import {storageServices} from '../../utility/storageServices';
+import {STORAGE_SERVICES} from '../../type';
 import {FiEye, FiEyeOff} from 'react-icons/fi';
 import {Link, useNavigate} from 'react-router';
 import {ROUTES} from '../../routing/routes';
@@ -60,6 +62,13 @@ const Login = () => {
 			);
 			if (response.status === 200) {
 				navigate(ROUTES.DASHBOARD);
+			}
+			if (response.data.token) {
+				storageServices.set(
+					STORAGE_SERVICES.LOCAL,
+					'authToken',
+					response.data.token
+				);
 			}
 			toast(response.message);
 		} catch (error: unknown) {
