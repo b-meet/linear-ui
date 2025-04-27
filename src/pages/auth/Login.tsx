@@ -1,28 +1,38 @@
-import {Link} from 'react-router';
-import {ROUTES} from '../../routing/routes';
 import {FormEvent, useState} from 'react';
 import {FiEye, FiEyeOff} from 'react-icons/fi';
-import {useNavigate} from 'react-router';
+import {Link} from 'react-router';
+import {ROUTES} from '../../routing/routes';
+import {API_ROUTES} from '../../utility/constant';
+import {apiUnAuth} from '../../api/services';
+import {ILoginResponse} from '../../redux/type';
+import {toast} from 'react-toastify';
+
+interface User {
+	email: string;
+	password: string;
+}
+
+interface Errors {
+	email: string;
+	password: string;
+}
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [otp, setOtp] = useState('');
-	const [user, setUser] = useState({email: '', password: ''});
-	const [errors, setErrors] = useState({email: '', password: ''});
-	const navigate = useNavigate();
+	const [user, setUser] = useState<User>({email: '', password: ''});
+	const [errors, setErrors] = useState<Errors>({email: '', password: ''});
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const {value, name} = e.target;
 		setUser({...user, [name]: value});
-		setErrors({...errors, [name]: ''}); // Clear error on input
+		setErrors({...errors, [name]: ''});
 	};
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
+	const validateInputs = (): boolean => {
 		let valid = true;
-		const newErrors = {...errors};
+		const newErrors: Errors = {...errors};
 
 		if (!user.email) {
 			newErrors.email = 'Email is required';
@@ -38,10 +48,34 @@ const Login = () => {
 		}
 
 		setErrors(newErrors);
+		return valid;
+	};
 
-		if (valid) {
-			console.log(user, 'submit');
-			navigate('/claims');
+	const loginAPI = async (): Promise<void> => {
+		try {
+			const response = await apiUnAuth.post<User, ILoginResponse>(
+				API_ROUTES.LOGIN,
+				user
+			);
+			toast(response.message || 'Login successful');
+		} catch (error: unknown) {
+			console.error(
+				(error as {response: {data: {message: string}}}).response?.data
+					?.message || 'Login failed'
+			);
+			toast(
+				(error as {response: {data: {message: string}}}).response?.data
+					?.message || 'Login failed'
+			);
+		}
+	};
+
+	const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+		event.preventDefault();
+
+		const isValid = validateInputs();
+		if (isValid) {
+			loginAPI();
 		}
 	};
 
@@ -120,7 +154,6 @@ const Login = () => {
 					</p>
 				</Link>
 			</div>
-
 			{/* forgot password */}
 			{showModal && (
 				<div className="fixed inset-0 bg-[#000000aa] flex justify-center items-center z-50">

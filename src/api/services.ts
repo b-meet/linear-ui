@@ -18,13 +18,13 @@ export const apiUnAuth = {
 			throw error;
 		}
 	},
-	post: async <T>(
+	post: async <T, U>(
 		url: string,
-		data: unknown,
+		data: T,
 		config?: AxiosRequestConfig
-	): Promise<T> => {
+	): Promise<U> => {
 		try {
-			const response = await apiClient.post<T>(url, data, config);
+			const response = await apiClient.post<U>(url, data, config);
 			return response.data;
 		} catch (error) {
 			console.error('API POST error:', error);

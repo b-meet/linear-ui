@@ -1,0 +1,4 @@
+export enum STORAGE_SERVICES {
+	LOCAL = 'LOCAL',
+	SESSION = 'SESSION',
+}
