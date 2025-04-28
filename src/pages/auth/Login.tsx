@@ -8,6 +8,7 @@ import {API_ROUTES} from '../../utility/constant';
 import {apiUnAuth} from '../../api/services';
 import {toast} from 'react-toastify';
 import {ILoginResponse} from '../../type';
+import GlobalModal from '../../components/global/GlobalModal'; // Import GlobalModal
 
 interface User {
 	email: string;
@@ -164,39 +165,40 @@ const Login = () => {
 					</p>
 				</Link>
 			</div>
-			{/* forgot password */}
-			{showModal && (
-				<div className="fixed inset-0 bg-[#000000aa] flex justify-center items-center z-50">
-					<div className="bg-white w-[300px] rounded-md p-4">
-						<h2 className="text-lg font-semibold mb-2">Enter OTP</h2>
-						<p className="text-sm mb-4 text-gray-600">
-							We've sent an OTP to your email:
-							<span className="font-medium text-brand ml-1">
-								{user.email || 'your email'}
-							</span>
-						</p>
-						<input
-							type="text"
-							maxLength={6}
-							value={otp}
-							onChange={(e) => setOtp(e.target.value)}
-							className="w-full border border-gray-300 rounded-md text-center p-2 text-lg tracking-widest"
-							placeholder="Enter OTP"
-						/>
-						<div className="flex justify-end gap-2 mt-4">
-							<button
-								className="cursor-pointer text-sm px-3 py-1 rounded-md border border-gray-400"
-								onClick={() => setShowModal(false)}
-							>
-								Cancel
-							</button>
-							<button className="cursor-pointer bg-brand text-white px-3 py-1 rounded-md text-sm">
-								Verify
-							</button>
-						</div>
+			<GlobalModal
+				isOpen={showModal}
+				onClose={() => setShowModal(false)}
+				title="Enter OTP"
+			>
+				<div>
+					<p className="text-sm mb-4 text-gray-600">
+						We've sent an OTP to your email:
+						<span className="font-medium text-brand ml-1">
+							{user.email || 'your email'}
+						</span>
+					</p>
+					<input
+						type="text"
+						maxLength={6}
+						value={otp}
+						onChange={(e) => setOtp(e.target.value)}
+						className="w-full border border-gray-300 rounded-md text-center p-2 text-lg tracking-widest"
+						placeholder="Enter OTP"
+					/>
+					<div className="flex justify-end gap-2 mt-4">
+						<button
+							className="cursor-pointer text-sm px-3 py-1 rounded-md border border-gray-400"
+							onClick={() => setShowModal(false)}
+						>
+							Cancel
+						</button>
+						<button className="cursor-pointer bg-brand text-white px-3 py-1 rounded-md text-sm">
+							{/* Add OTP verification logic here */}
+							Verify
+						</button>
 					</div>
 				</div>
-			)}
+			</GlobalModal>
 		</>
 	);
 };
