@@ -3,6 +3,12 @@ export enum STORAGE_SERVICES {
 	SESSION = 'SESSION',
 }
 
+export type FormSection =
+	| 'customerDetails'
+	| 'tyreDetails'
+	| 'vehicleDetails'
+	| 'issuance';
+
 //login
 export interface ILoginPayload {
 	email: string;

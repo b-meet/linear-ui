@@ -6,30 +6,41 @@ export interface CustomerDetailsState {
 	customerNumber: string;
 	billDate: string;
 	billNumber: string;
+	docketNumber: string;
+	leadRelation: string;
+	complaintDetails: string;
+	additionalRemarks: string;
 }
 
-// Placeholder interfaces for other sections
 export interface TyreDetailsState {
-	// Add tyre fields here, e.g., brand: string, size: string;
-	[key: string]: unknown; // Allow flexibility for now
+	warrentyDetails: string;
+	tyreSerialNumber: string;
+	tyrePattern: string;
+	tyreSize: string;
+	tyreSentDate: string | null;
+	tyreSentThrough: string;
+	tyreCompany: string;
+	tyreImg?: string[];
 }
 
 export interface VehicleDetailsState {
-	// Add vehicle fields here, e.g., make: string, model: string, year: number;
-	[key: string]: unknown;
+	vehicleNumber: string;
+	type: string;
+	distanceCovered: string;
 }
 
 export interface IssuanceState {
-	// Add issuance fields here, e.g., policyStartDate: string, agentName: string;
-	[key: string]: unknown;
+	depreciationAmt: string;
+	claimStatusByCompany: string;
+	returnToCustomerDt: string | null;
+	finalClaimStatus: string;
 }
 
-// Define the overall state structure for the claims form
 export interface ClaimsFormState {
 	customerDetails: CustomerDetailsState;
-	tyreDetails: TyreDetailsState; // Added TyreDetails
-	vehicleDetails: VehicleDetailsState; // Added VehicleDetails
-	issuance: IssuanceState; // Added Issuance
+	tyreDetails: TyreDetailsState;
+	vehicleDetails: VehicleDetailsState;
+	issuance: IssuanceState;
 }
 
 const initialState: ClaimsFormState = {
@@ -38,10 +49,32 @@ const initialState: ClaimsFormState = {
 		customerNumber: '',
 		billDate: '',
 		billNumber: '',
+		docketNumber: '',
+		leadRelation: '',
+		complaintDetails: '',
+		additionalRemarks: '',
 	},
-	tyreDetails: {}, // Initialize TyreDetails
-	vehicleDetails: {}, // Initialize VehicleDetails
-	issuance: {}, // Initialize Issuance
+	tyreDetails: {
+		warrentyDetails: '',
+		tyreSerialNumber: '',
+		tyrePattern: '',
+		tyreSize: '',
+		tyreSentDate: null,
+		tyreSentThrough: '',
+		tyreCompany: '',
+		tyreImg: [],
+	},
+	vehicleDetails: {
+		vehicleNumber: '',
+		type: '',
+		distanceCovered: '',
+	},
+	issuance: {
+		depreciationAmt: '',
+		claimStatusByCompany: 'pending',
+		returnToCustomerDt: null,
+		finalClaimStatus: '',
+	},
 };
 
 interface UpdateFieldPayload {
@@ -83,9 +116,8 @@ const claimsFormSlice = createSlice({
 
 export const {initializeForm, updateFormField, resetForm} =
 	claimsFormSlice.actions;
-export const selectClaimsForm = (state: RootState) => state.claimsForm;
 
-// Selectors for each section
+export const selectClaimsForm = (state: RootState) => state.claimsForm;
 export const selectClaimsCustomerDetails = (state: RootState) =>
 	state.claimsForm.customerDetails;
 export const selectClaimsTyreDetails = (state: RootState) =>
