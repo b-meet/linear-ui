@@ -5,9 +5,12 @@ import {debounce} from '../../utility/debounce';
 interface CustomerDetailsProps {
 	details: CustomerDetailsState;
 	onChange: (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => void;
 	onNext: () => void;
+	onBack: () => void;
 }
 
 const DEBOUNCE_DELAY = 500;
@@ -16,6 +19,7 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 	details,
 	onChange,
 	onNext,
+	onBack,
 }) => {
 	const [localDetails, setLocalDetails] =
 		useState<CustomerDetailsState>(details);
@@ -26,14 +30,23 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
-		debounce((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-			onChange(event);
-		}, DEBOUNCE_DELAY),
+		debounce(
+			(
+				event: ChangeEvent<
+					HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+				>
+			) => {
+				onChange(event);
+			},
+			DEBOUNCE_DELAY
+		),
 		[onChange]
 	);
 
 	const handleChange = (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => {
 		const {name, value} = event.target;
 		setLocalDetails((prevDetails) => ({
@@ -126,14 +139,17 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 						<label className="text-sm" htmlFor="leadRelation">
 							Lead Relation
 						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="leadRelation"
+						<select
 							name="leadRelation"
+							id="leadRelation"
+							className="custom-input h-full"
 							value={localDetails.leadRelation}
 							onChange={handleChange}
-						/>
+						>
+							<option value="new">New customer</option>
+							<option value="old">Old customer</option>
+							<option value="other">Third party</option>
+						</select>
 					</div>
 				</div>
 				<div className="flex flex-col gap-1">
@@ -161,12 +177,20 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 					/>
 				</div>
 			</div>
-			<button
-				className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
-				onClick={onNext}
-			>
-				Save & Next
-			</button>
+			<div className="flex items-center justify-end">
+				<button
+					className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+					onClick={onBack}
+				>
+					Back
+				</button>
+				<button
+					className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
+					onClick={onNext}
+				>
+					Save & Next
+				</button>
+			</div>
 		</section>
 	);
 };

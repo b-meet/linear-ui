@@ -8,11 +8,17 @@ interface IssuanceProps {
 		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => void;
 	onNext: () => void;
+	onBack: () => void;
 }
 
 const DEBOUNCE_DELAY = 500;
 
-const Issuance: React.FC<IssuanceProps> = ({details, onChange, onNext}) => {
+const Issuance: React.FC<IssuanceProps> = ({
+	details,
+	onChange,
+	onNext,
+	onBack,
+}) => {
 	const [localDetails, setLocalDetails] = useState<IssuanceState>(details);
 
 	useEffect(() => {
@@ -53,7 +59,7 @@ const Issuance: React.FC<IssuanceProps> = ({details, onChange, onNext}) => {
 					</label>
 					<input
 						className="custom-input"
-						type="text" // Use text, can add validation for number later
+						type="text"
 						id="depreciationAmt"
 						name="depreciationAmt"
 						value={localDetails.depreciationAmt}
@@ -100,12 +106,20 @@ const Issuance: React.FC<IssuanceProps> = ({details, onChange, onNext}) => {
 					/>
 				</div>
 			</div>
-			<button
-				className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
-				onClick={onNext}
-			>
-				Save
-			</button>
+			<div className="flex items-center justify-end">
+				<button
+					className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+					onClick={onBack}
+				>
+					Back
+				</button>
+				<button
+					className="bg-brand-darker text-white rounded-md py-2 px-4"
+					onClick={onNext}
+				>
+					Save
+				</button>
+			</div>
 		</section>
 	);
 };

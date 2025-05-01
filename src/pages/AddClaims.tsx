@@ -51,6 +51,22 @@ const AddClaims = () => {
 		}
 	}, [activeSection, navigate]);
 
+	const goToPreviousSection = useCallback(() => {
+		switch (activeSection) {
+			case 'tyreDetails':
+				setActiveSection('customerDetails');
+				break;
+			case 'vehicleDetails':
+				setActiveSection('tyreDetails');
+				break;
+			case 'issuance':
+				setActiveSection('vehicleDetails');
+				break;
+			default:
+				break;
+		}
+	}, [activeSection]);
+
 	// Initialize the entire form state from sessionStorage
 	useEffect(() => {
 		const savedData = storageServices.get(
@@ -154,6 +170,7 @@ const AddClaims = () => {
 						details={customerDetails}
 						onChange={handleCustomerDetailsChange}
 						onNext={goToNextSection}
+						onBack={goToPreviousSection}
 					/>
 				);
 			case 'tyreDetails':
@@ -162,6 +179,7 @@ const AddClaims = () => {
 						details={tyreDetails}
 						onChange={handleTyreDetailsChange}
 						onNext={goToNextSection}
+						onBack={goToPreviousSection}
 					/>
 				);
 			case 'vehicleDetails':
@@ -170,6 +188,7 @@ const AddClaims = () => {
 						details={vehicleDetails}
 						onChange={handleVehicleDetailsChange}
 						onNext={goToNextSection}
+						onBack={goToPreviousSection}
 					/>
 				);
 			case 'issuance':
@@ -178,6 +197,7 @@ const AddClaims = () => {
 						details={issuance}
 						onChange={handleIssuanceChange}
 						onNext={goToNextSection}
+						onBack={goToPreviousSection}
 					/>
 				);
 			default:
@@ -194,8 +214,8 @@ const AddClaims = () => {
 				<FaArrowLeft className="text-xs" />
 				<h1 className="text-xl font-medium">Add Claims</h1>
 			</button>
-			<section className="flex gap-4 h-full">
-				<div className="flex-2 bg-white shadow-sm rounded-md p-4 w-full h-[calc(100%-50px)]">
+			<section className="flex gap-4 h-[94%]">
+				<div className="flex-2 bg-white shadow-sm rounded-md p-4 w-full">
 					{renderActiveForm()}
 				</div>
 			</section>

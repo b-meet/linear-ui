@@ -8,6 +8,7 @@ interface VehicleDetailsProps {
 		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => void;
 	onNext: () => void;
+	onBack: () => void;
 }
 
 const DEBOUNCE_DELAY = 500;
@@ -16,6 +17,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 	details,
 	onChange,
 	onNext,
+	onBack,
 }) => {
 	const [localDetails, setLocalDetails] =
 		useState<VehicleDetailsState>(details);
@@ -52,7 +54,6 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 	return (
 		<section className="flex flex-col gap-3 justify-between h-full">
 			<div className="flex flex-col gap-3">
-				{/* Vehicle Number */}
 				<div className="flex flex-col gap-1 flex-1">
 					<label className="text-sm" htmlFor="vehicleNumber">
 						Vehicle Number
@@ -66,7 +67,6 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 						onChange={handleChange}
 					/>
 				</div>
-				{/* Type */}
 				<div className="flex flex-col gap-1 flex-1">
 					<label className="text-sm" htmlFor="type">
 						Type (e.g., Car, Truck)
@@ -80,7 +80,6 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 						onChange={handleChange}
 					/>
 				</div>
-				{/* Distance Covered */}
 				<div className="flex flex-col gap-1 flex-1">
 					<label className="text-sm" htmlFor="distanceCovered">
 						Distance Covered (km)
@@ -95,12 +94,20 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 					/>
 				</div>
 			</div>
-			<button
-				className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
-				onClick={onNext}
-			>
-				Save & Next
-			</button>
+			<div className="flex items-center justify-end">
+				<button
+					className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+					onClick={onBack}
+				>
+					Back
+				</button>
+				<button
+					className="bg-brand-darker text-white rounded-md py-2 px-4"
+					onClick={onNext}
+				>
+					Save & Next
+				</button>
+			</div>
 		</section>
 	);
 };

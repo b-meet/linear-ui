@@ -8,6 +8,7 @@ interface TyreDetailsProps {
 		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => void;
 	onNext: () => void;
+	onBack: () => void;
 }
 
 const DEBOUNCE_DELAY = 500;
@@ -16,6 +17,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 	details,
 	onChange,
 	onNext,
+	onBack,
 }) => {
 	const [localDetails, setLocalDetails] = useState<TyreDetailsState>(details);
 
@@ -153,12 +155,20 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 					/>
 				</div>
 			</div>
-			<button
-				className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
-				onClick={onNext}
-			>
-				Save & Next
-			</button>
+			<div className="flex items-center justify-end">
+				<button
+					className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+					onClick={onBack}
+				>
+					Back
+				</button>
+				<button
+					className="bg-brand-darker text-white rounded-md py-2 px-4"
+					onClick={onNext}
+				>
+					Save & Next
+				</button>
+			</div>
 		</section>
 	);
 };
