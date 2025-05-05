@@ -215,7 +215,7 @@ const AddClaims = () => {
 				<h1 className="text-xl font-medium">Add Claims</h1>
 			</button>
 			<section className="flex gap-4 h-[94%]">
-				<div className="flex-2 bg-white shadow-sm rounded-md p-4 w-full">
+				<div className="flex-2 bg-white shadow-sm rounded-md pb-4 w-full overflow-clip">
 					{renderActiveForm()}
 				</div>
 			</section>
