@@ -1,6 +1,10 @@
 import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
+import {useLocation} from 'react-router';
 import {CustomerDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
+import {apiAuth} from '../../api/services';
+import {CustomerDetailsProps} from './types';
+import {toast} from 'react-toastify';
 
 interface ValidationErrors {
 	customerName?: string;
@@ -11,17 +15,6 @@ interface ValidationErrors {
 	complaintDetails?: string;
 }
 
-interface CustomerDetailsProps {
-	details: CustomerDetailsState;
-	onChange: (
-		event: ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-		>
-	) => void;
-	onNext: () => void;
-	onBack: () => void;
-}
-
 const DEBOUNCE_DELAY = 500;
 
 const CustomerDetails: React.FC<CustomerDetailsProps> = ({
@@ -30,12 +23,18 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 	onNext,
 	onBack,
 }) => {
-	const [localDetails, setLocalDetails] =
-		useState<CustomerDetailsState>(details);
+	const [localDetails, setLocalDetails] = useState<CustomerDetailsState>({
+		...details,
+		leadRelation: details.leadRelation || 'new',
+	});
 	const [errors, setErrors] = useState<ValidationErrors>({});
+	const {pathname} = useLocation();
 
 	useEffect(() => {
-		setLocalDetails(details);
+		setLocalDetails({
+			...details,
+			leadRelation: details.leadRelation || 'new',
+		});
 	}, [details]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,10 +94,29 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 		};
 	}, [debouncedOnChange]);
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			onNext();
+			const claimId = pathname.split('/').pop();
+			const tabId = 1;
+			const payload = {
+				name: localDetails.customerName,
+				mobileNumber: localDetails.customerNumber,
+				billNumber: localDetails.billNumber,
+				billDate: localDetails.billDate,
+				docketNumber: localDetails.docketNumber,
+				leadRelation: localDetails.leadRelation,
+				complaintDetails: localDetails.complaintDetails,
+				additionalRemarks: localDetails.additionalRemarks,
+			};
+			try {
+				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
+				toast.success('Customer Details saved successfully');
+				onNext();
+			} catch (error) {
+				toast.error('Something went wrong');
+				console.error('Error during API call:', error);
+			}
 		}
 	};
 

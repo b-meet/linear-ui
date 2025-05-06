@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {TyreDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
+import {apiAuth} from '../../api/services';
+import {toast} from 'react-toastify';
 
 interface ValidationErrors {
 	warrentyDetails?: string;
@@ -79,10 +81,28 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 		};
 	}, [debouncedOnChange]);
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			onNext();
+			const claimId = window.location.pathname.split('/').pop();
+			const tabId = 2;
+			const payload = {
+				warrentyDetails: localDetails.warrentyDetails,
+				tyreSerialNumber: localDetails.tyreSerialNumber,
+				tyreSize: localDetails.tyreSize,
+				tyrePattern: localDetails.tyrePattern,
+				tyreCompany: localDetails.tyreCompany,
+				tyreSentDate: localDetails.tyreSentDate,
+				tyreSentThrough: localDetails.tyreSentThrough,
+			};
+			try {
+				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
+				toast.success('Tyre Details saved successfully');
+				onNext();
+			} catch (error) {
+				toast.error('Something went wrong');
+				console.error('Error during API call:', error);
+			}
 		}
 	};
 

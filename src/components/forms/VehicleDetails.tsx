@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {VehicleDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
+import {apiAuth} from '../../api/services';
+import {toast} from 'react-toastify';
 
 interface ValidationErrors {
 	vehicleNumber?: string;
@@ -65,10 +67,24 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 		};
 	}, [debouncedOnChange]);
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			onNext();
+			const claimId = window.location.pathname.split('/').pop();
+			const tabId = 3;
+			const payload = {
+				vehicleNumber: localDetails.vehicleNumber,
+				vehicleType: localDetails.type,
+				distanceCovered: localDetails.distanceCovered,
+			};
+			try {
+				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
+				toast.success('Vehicle Details saved successfully');
+				onNext();
+			} catch (error) {
+				toast.error('Something went wrong');
+				console.error('Error during API call:', error);
+			}
 		}
 	};
 
