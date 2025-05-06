@@ -209,12 +209,15 @@ const AddClaims = () => {
 		<>
 			<button
 				onClick={handleStepBack}
-				className="flex items-center gap-2 text-slate-700 px-3 py-0.5 mb-2 rounded-md cursor-pointer hover:text-slate-900"
+				className="flex items-center gap-2 text-slate-600 rounded-md cursor-pointer hover:text-slate-900"
 			>
 				<FaArrowLeft className="text-xs" />
 				<h1 className="text-xl font-medium">Add Claims</h1>
 			</button>
-			<section className="flex gap-4 h-[94%]">
+			<p className="text-xs text-slate-500 mb-2">
+				Required fields are marked with *
+			</p>
+			<section className="flex gap-4 h-[92%]">
 				<div className="flex-2 bg-white shadow-sm rounded-md pb-4 w-full overflow-clip">
 					{renderActiveForm()}
 				</div>

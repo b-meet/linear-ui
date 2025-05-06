@@ -2,6 +2,15 @@ import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {CustomerDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 
+interface ValidationErrors {
+	customerName?: string;
+	customerNumber?: string;
+	billDate?: string;
+	billNumber?: string;
+	docketNumber?: string;
+	complaintDetails?: string;
+}
+
 interface CustomerDetailsProps {
 	details: CustomerDetailsState;
 	onChange: (
@@ -23,6 +32,7 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 }) => {
 	const [localDetails, setLocalDetails] =
 		useState<CustomerDetailsState>(details);
+	const [errors, setErrors] = useState<ValidationErrors>({});
 
 	useEffect(() => {
 		setLocalDetails(details);
@@ -56,14 +66,44 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 		debouncedOnChange(event);
 	};
 
+	const validateForm = () => {
+		const newErrors: ValidationErrors = {};
+		if (!localDetails.customerName) {
+			newErrors.customerName = 'Name is required';
+		}
+		if (!localDetails.customerNumber) {
+			newErrors.customerNumber = 'Phone number is required';
+		} else if (!/^\d{10}$/.test(localDetails.customerNumber)) {
+			newErrors.customerNumber = 'Invalid phone number';
+		}
+		if (!localDetails.billDate) {
+			newErrors.billDate = 'Bill date is required';
+		}
+		if (!localDetails.billNumber) {
+			newErrors.billNumber = 'Bill number is required';
+		}
+		if (!localDetails.docketNumber) {
+			newErrors.docketNumber = 'Docket number is required';
+		}
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
 	useEffect(() => {
 		return () => {
 			debouncedOnChange.cancel();
 		};
 	}, [debouncedOnChange]);
 
+	const handleNext = () => {
+		const isValid = validateForm();
+		if (isValid) {
+			onNext();
+		}
+	};
+
 	return (
-		<section className="flex flex-col gap-3 h-full">
+		<section className="flex flex-col gap-2 h-full">
 			<div className="bg-brand-lighter ">
 				<h2 className="px-4 py-3">Customer Details</h2>
 				<hr className="text-brand-light-hover" />
@@ -73,7 +113,7 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="customerName">
-								Name
+								Name*
 							</label>
 							<input
 								className="custom-input"
@@ -83,10 +123,13 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 								value={localDetails.customerName}
 								onChange={handleChange}
 							/>
+							{errors.customerName && (
+								<p className="text-red-500 text-xs">{errors.customerName}</p>
+							)}
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="customerNumber">
-								Number
+								Phone Number*
 							</label>
 							<input
 								className="custom-input"
@@ -96,25 +139,32 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 								value={localDetails.customerNumber}
 								onChange={handleChange}
 							/>
+							{errors.customerNumber && (
+								<p className="text-red-500 text-xs">{errors.customerNumber}</p>
+							)}
 						</div>
 					</div>
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="billDate">
-								Bill Date
+								Bill Date*
 							</label>
 							<input
 								className="custom-input"
 								type="date"
 								id="billDate"
 								name="billDate"
+								max={new Date().toISOString().split('T')[0]}
 								value={localDetails.billDate}
 								onChange={handleChange}
 							/>
+							{errors.billDate && (
+								<p className="text-red-500 text-xs">{errors.billDate}</p>
+							)}
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="billNumber">
-								Bill Number
+								Bill Number*
 							</label>
 							<input
 								className="custom-input"
@@ -124,12 +174,15 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 								value={localDetails.billNumber}
 								onChange={handleChange}
 							/>
+							{errors.billNumber && (
+								<p className="text-red-500 text-xs">{errors.billNumber}</p>
+							)}
 						</div>
 					</div>
-					<div className="flex gap-4">
+					<div className="flex gap-4 items-start">
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="docketNumber">
-								Docket Number
+								Docket Number*
 							</label>
 							<input
 								className="custom-input"
@@ -139,6 +192,9 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 								value={localDetails.docketNumber}
 								onChange={handleChange}
 							/>
+							{errors.docketNumber && (
+								<p className="text-red-500 text-xs">{errors.docketNumber}</p>
+							)}
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="leadRelation">
@@ -147,7 +203,7 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 							<select
 								name="leadRelation"
 								id="leadRelation"
-								className="custom-input h-full"
+								className="custom-input h-ful py-1.5"
 								value={localDetails.leadRelation}
 								onChange={handleChange}
 							>
@@ -184,16 +240,16 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 				</div>
 				<div className="flex items-center justify-end">
 					<button
-						className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+						className="bg-slate-400 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-slate-500 mr-2"
 						onClick={onBack}
 					>
 						Back
 					</button>
 					<button
-						className="bg-brand-darker text-white rounded-md py-2 px-4 hover:bg-brand-dark"
-						onClick={onNext}
+						className="bg-brand-darker text-white rounded-md py-2 px-4 cursor-pointer hover:bg-brand-dark"
+						onClick={handleNext}
 					>
-						Save & Next
+						Next
 					</button>
 				</div>
 			</article>

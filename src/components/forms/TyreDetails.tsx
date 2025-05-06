@@ -2,6 +2,13 @@ import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {TyreDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 
+interface ValidationErrors {
+	warrentyDetails?: string;
+	tyreSerialNumber?: string;
+	tyreSize?: string;
+	tyrePattern?: string;
+}
+
 interface TyreDetailsProps {
 	details: TyreDetailsState;
 	onChange: (
@@ -20,6 +27,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 	onBack,
 }) => {
 	const [localDetails, setLocalDetails] = useState<TyreDetailsState>(details);
+	const [errors, setErrors] = useState<ValidationErrors>({});
 
 	useEffect(() => {
 		setLocalDetails({
@@ -47,11 +55,36 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 		debouncedOnChange(event);
 	};
 
+	const validateForm = () => {
+		const newErrors: ValidationErrors = {};
+		if (!localDetails.warrentyDetails) {
+			newErrors.warrentyDetails = 'Warranty detail is required';
+		}
+		if (!localDetails.tyreSerialNumber) {
+			newErrors.tyreSerialNumber = 'Serial number is required';
+		}
+		if (!localDetails.tyreSize) {
+			newErrors.tyreSize = 'Tyre size is required';
+		}
+		if (!localDetails.tyrePattern) {
+			newErrors.tyrePattern = 'Tyre pattern is required';
+		}
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
 	useEffect(() => {
 		return () => {
 			debouncedOnChange.cancel();
 		};
 	}, [debouncedOnChange]);
+
+	const handleNext = () => {
+		const isValid = validateForm();
+		if (isValid) {
+			onNext();
+		}
+	};
 
 	return (
 		<section className="flex flex-col gap-3 h-full">
@@ -63,31 +96,38 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 				<div className="flex flex-col gap-3">
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
-							<label className="text-sm" htmlFor="tyreCompany">
-								Brand
-							</label>
-							<input
-								className="custom-input"
-								type="text" // Corrected type
-								id="tyreCompany"
-								name="tyreCompany"
-								value={localDetails.tyreCompany}
-								onChange={handleChange}
-							/>
-						</div>
-						{/* Tyre Pattern */}
-						<div className="flex flex-col gap-1 flex-1">
-							<label className="text-sm" htmlFor="tyrePattern">
-								Pattern
+							<label className="text-sm" htmlFor="warrentyDetails">
+								Warranty Details
 							</label>
 							<input
 								className="custom-input"
 								type="text"
-								id="tyrePattern"
-								name="tyrePattern"
-								value={localDetails.tyrePattern}
+								id="warrentyDetails"
+								name="warrentyDetails"
+								value={localDetails.warrentyDetails}
 								onChange={handleChange}
 							/>
+							{errors.warrentyDetails && (
+								<p className="text-red-500 text-xs">{errors.warrentyDetails}</p>
+							)}
+						</div>
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="tyreSerialNumber">
+								Serial Number
+							</label>
+							<input
+								className="custom-input"
+								type="text"
+								id="tyreSerialNumber"
+								name="tyreSerialNumber"
+								value={localDetails.tyreSerialNumber}
+								onChange={handleChange}
+							/>
+							{errors.tyreSerialNumber && (
+								<p className="text-red-500 text-xs">
+									{errors.tyreSerialNumber}
+								</p>
+							)}
 						</div>
 					</div>
 					<div className="flex gap-4">
@@ -103,32 +143,38 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 								value={localDetails.tyreSize}
 								onChange={handleChange}
 							/>
+							{errors.tyreSize && (
+								<p className="text-red-500 text-xs">{errors.tyreSize}</p>
+							)}
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
-							<label className="text-sm" htmlFor="tyreSerialNumber">
-								Serial Number
+							<label className="text-sm" htmlFor="tyrePattern">
+								Pattern
 							</label>
 							<input
 								className="custom-input"
 								type="text"
-								id="tyreSerialNumber"
-								name="tyreSerialNumber"
-								value={localDetails.tyreSerialNumber}
+								id="tyrePattern"
+								name="tyrePattern"
+								value={localDetails.tyrePattern}
 								onChange={handleChange}
 							/>
+							{errors.tyrePattern && (
+								<p className="text-red-500 text-xs">{errors.tyrePattern}</p>
+							)}
 						</div>
 					</div>
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
-							<label className="text-sm" htmlFor="warrentyDetails">
-								Warranty Details
+							<label className="text-sm" htmlFor="tyreCompany">
+								Brand
 							</label>
 							<input
 								className="custom-input"
 								type="text"
-								id="warrentyDetails"
-								name="warrentyDetails"
-								value={localDetails.warrentyDetails}
+								id="tyreCompany"
+								name="tyreCompany"
+								value={localDetails.tyreCompany}
 								onChange={handleChange}
 							/>
 						</div>
@@ -162,16 +208,16 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 				</div>
 				<div className="flex items-center justify-end">
 					<button
-						className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+						className="bg-slate-400 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-slate-500 mr-2"
 						onClick={onBack}
 					>
 						Back
 					</button>
 					<button
-						className="bg-brand-darker text-white rounded-md py-2 px-4"
-						onClick={onNext}
+						className="bg-brand-darker text-white rounded-md py-2 px-4 cursor-pointer"
+						onClick={handleNext}
 					>
-						Save & Next
+						Next
 					</button>
 				</div>
 			</article>

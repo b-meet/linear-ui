@@ -113,13 +113,13 @@ const Issuance: React.FC<IssuanceProps> = ({
 				</div>
 				<div className="flex items-center justify-end">
 					<button
-						className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+						className="bg-slate-400 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-slate-500 mr-2"
 						onClick={onBack}
 					>
 						Back
 					</button>
 					<button
-						className="bg-brand-darker text-white rounded-md py-2 px-4"
+						className="bg-brand-darker text-white rounded-md py-2 px-4 cursor-pointer"
 						onClick={onNext}
 					>
 						Save

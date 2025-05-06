@@ -2,6 +2,10 @@ import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {VehicleDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 
+interface ValidationErrors {
+	vehicleNumber?: string;
+}
+
 interface VehicleDetailsProps {
 	details: VehicleDetailsState;
 	onChange: (
@@ -21,6 +25,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 }) => {
 	const [localDetails, setLocalDetails] =
 		useState<VehicleDetailsState>(details);
+	const [errors, setErrors] = useState<ValidationErrors>({});
 
 	useEffect(() => {
 		setLocalDetails(details);
@@ -45,11 +50,27 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 		debouncedOnChange(event);
 	};
 
+	const validateForm = () => {
+		const newErrors: ValidationErrors = {};
+		if (!localDetails.vehicleNumber) {
+			newErrors.vehicleNumber = 'Vehicle number is required';
+		}
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
 	useEffect(() => {
 		return () => {
 			debouncedOnChange.cancel();
 		};
 	}, [debouncedOnChange]);
+
+	const handleNext = () => {
+		const isValid = validateForm();
+		if (isValid) {
+			onNext();
+		}
+	};
 
 	return (
 		<section className="flex flex-col gap-3 h-full">
@@ -71,46 +92,51 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 							value={localDetails.vehicleNumber}
 							onChange={handleChange}
 						/>
+						{errors.vehicleNumber && (
+							<p className="text-red-500 text-xs">{errors.vehicleNumber}</p>
+						)}
 					</div>
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="type">
-							Type (e.g., Car, Truck)
-						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="type"
-							name="type"
-							value={localDetails.type}
-							onChange={handleChange}
-						/>
-					</div>
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="distanceCovered">
-							Distance Covered (km)
-						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="distanceCovered"
-							name="distanceCovered"
-							value={localDetails.distanceCovered}
-							onChange={handleChange}
-						/>
+					<div className="flex gap-4">
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="type">
+								Type (e.g., Car, Truck)
+							</label>
+							<input
+								className="custom-input"
+								type="text"
+								id="type"
+								name="type"
+								value={localDetails.type}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="distanceCovered">
+								Distance Covered (km)
+							</label>
+							<input
+								className="custom-input"
+								type="text"
+								id="distanceCovered"
+								name="distanceCovered"
+								value={localDetails.distanceCovered}
+								onChange={handleChange}
+							/>
+						</div>
 					</div>
 				</div>
 				<div className="flex items-center justify-end">
 					<button
-						className="bg-slate-400 text-white rounded-md py-2 px-4 hover:bg-slate-500 mr-2"
+						className="bg-slate-400 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-slate-500 mr-2"
 						onClick={onBack}
 					>
 						Back
 					</button>
 					<button
-						className="bg-brand-darker text-white rounded-md py-2 px-4"
-						onClick={onNext}
+						className="bg-brand-darker text-white rounded-md py-2 px-4 cursor-pointer"
+						onClick={handleNext}
 					>
-						Save & Next
+						Next
 					</button>
 				</div>
 			</article>
