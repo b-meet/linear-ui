@@ -103,7 +103,7 @@ const AddClaims = () => {
 					depreciationAmt: '',
 					claimStatusByCompany: 'pending',
 					returnToCustomerDt: null,
-					finalClaimStatus: '',
+					finalClaimStatus: false,
 				},
 			};
 			const mergedData = {...initialState, ...savedData};

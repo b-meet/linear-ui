@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
 import {IssuanceState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
+import {apiAuth} from '../../api/services';
+import {toast} from 'react-toastify';
 
 interface IssuanceProps {
 	details: IssuanceState;
@@ -62,18 +64,29 @@ const Issuance: React.FC<IssuanceProps> = ({
 		}));
 	};
 
-	console.log(localDetails);
-
 	useEffect(() => {
 		return () => {
 			debouncedOnChange.cancel();
 		};
 	}, [debouncedOnChange]);
 
-	const handleSave = () => {
-		console.log(localDetails);
-
-		// onNext();
+	const handleSave = async () => {
+		const claimId = window.location.pathname.split('/').pop();
+		const tabId = 4;
+		const payload = {
+			depreciationAmt: localDetails.depreciationAmt,
+			claimStatusByCompany: localDetails.claimStatusByCompany,
+			returnToCustomerDt: localDetails.returnToCustomerDt,
+			finalClaimStatus: localDetails.finalClaimStatus,
+		};
+		try {
+			await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
+			toast.success('Issuance Details saved successfully');
+			onNext();
+		} catch (error) {
+			toast.error('Something went wrong while saving issuance details');
+			console.error('Error during API call:', error);
+		}
 	};
 
 	return (
