@@ -117,7 +117,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="warrentyDetails">
-								Warranty Details
+								Warranty Details*
 							</label>
 							<input
 								className="custom-input"
@@ -133,7 +133,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="tyreSerialNumber">
-								Serial Number
+								Serial Number*
 							</label>
 							<input
 								className="custom-input"
@@ -153,7 +153,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="tyreSize">
-								Size
+								Size*
 							</label>
 							<input
 								className="custom-input"
@@ -169,7 +169,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="tyrePattern">
-								Pattern
+								Pattern*
 							</label>
 							<input
 								className="custom-input"

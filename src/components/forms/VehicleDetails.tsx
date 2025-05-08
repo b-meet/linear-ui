@@ -98,7 +98,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 				<div className="flex flex-col gap-3">
 					<div className="flex flex-col gap-1 flex-1">
 						<label className="text-sm" htmlFor="vehicleNumber">
-							Vehicle Number
+							Vehicle Number*
 						</label>
 						<input
 							className="custom-input"

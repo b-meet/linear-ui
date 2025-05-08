@@ -33,7 +33,7 @@ export interface IssuanceState {
 	depreciationAmt: string;
 	claimStatusByCompany: string;
 	returnToCustomerDt: string | null;
-	finalClaimStatus: string;
+	finalClaimStatus: boolean;
 }
 
 export interface ClaimsFormState {
@@ -73,7 +73,7 @@ const initialState: ClaimsFormState = {
 		depreciationAmt: '',
 		claimStatusByCompany: 'pending',
 		returnToCustomerDt: null,
-		finalClaimStatus: '',
+		finalClaimStatus: false,
 	},
 };
 

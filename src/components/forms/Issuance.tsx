@@ -5,7 +5,9 @@ import {debounce} from '../../utility/debounce';
 interface IssuanceProps {
 	details: IssuanceState;
 	onChange: (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => void;
 	onNext: () => void;
 	onBack: () => void;
@@ -27,14 +29,23 @@ const Issuance: React.FC<IssuanceProps> = ({
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
-		debounce((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-			onChange(event);
-		}, DEBOUNCE_DELAY),
+		debounce(
+			(
+				event: ChangeEvent<
+					HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+				>
+			) => {
+				onChange(event);
+			},
+			DEBOUNCE_DELAY
+		),
 		[onChange]
 	);
 
 	const handleChange = (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => {
 		const {name, value} = event.target;
 		setLocalDetails((prevDetails) => ({
@@ -44,11 +55,26 @@ const Issuance: React.FC<IssuanceProps> = ({
 		debouncedOnChange(event);
 	};
 
+	const handleCheck = () => {
+		setLocalDetails((prevDetails) => ({
+			...prevDetails,
+			finalClaimStatus: !localDetails.finalClaimStatus,
+		}));
+	};
+
+	console.log(localDetails);
+
 	useEffect(() => {
 		return () => {
 			debouncedOnChange.cancel();
 		};
 	}, [debouncedOnChange]);
+
+	const handleSave = () => {
+		console.log(localDetails);
+
+		// onNext();
+	};
 
 	return (
 		<section className="flex flex-col gap-3 justify-between h-full">
@@ -58,57 +84,71 @@ const Issuance: React.FC<IssuanceProps> = ({
 			</div>
 			<article className="flex flex-col gap-3 justify-between h-full px-4">
 				<div className="flex flex-col gap-3">
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="depreciationAmt">
-							Depreciation Amount
-						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="depreciationAmt"
-							name="depreciationAmt"
-							value={localDetails.depreciationAmt}
-							onChange={handleChange}
-						/>
+					<div className="flex gap-4">
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="depreciationAmt">
+								Depreciation Amount
+							</label>
+							<input
+								className="custom-input"
+								type="text"
+								id="depreciationAmt"
+								name="depreciationAmt"
+								value={localDetails.depreciationAmt}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="claimStatusByCompany">
+								Claim Status (By Company)
+							</label>
+							<select
+								className="custom-input py-1.5 px-2"
+								id="claimStatusByCompany"
+								name="claimStatusByCompany"
+								value={localDetails.claimStatusByCompany}
+								onChange={handleChange}
+							>
+								<option value="pending">pending</option>
+								<option value="rejected">rejected</option>
+								<option value="accepted">accepted</option>
+							</select>
+						</div>
 					</div>
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="claimStatusByCompany">
-							Claim Status (Company)
-						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="claimStatusByCompany"
-							name="claimStatusByCompany"
-							value={localDetails.claimStatusByCompany}
-							onChange={handleChange}
-						/>
+					<div className="flex gap-4">
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="returnToCustomerDt">
+								Return To Customer Date
+							</label>
+							<input
+								className="custom-input"
+								type="date"
+								id="returnToCustomerDt"
+								name="returnToCustomerDt"
+								value={localDetails.returnToCustomerDt ?? ''}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="flex-1"></div>
 					</div>
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="returnToCustomerDt">
-							Return To Customer Date
+					<div className="flex flex-col gap-1 mt-4">
+						<span className="text-sm">Final Claim Status</span>
+						<label className="h-full inline-flex items-center cursor-pointer">
+							<input
+								type="checkbox"
+								className="sr-only peer"
+								id="finalClaimStatus"
+								name="finalClaimStatus"
+								checked={localDetails.finalClaimStatus}
+								onChange={handleCheck}
+							/>
+							<div className="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+							<span
+								className={`ms-3 text-sm font-medium ${localDetails.finalClaimStatus ? 'text-gray-900' : 'text-gray-400'}`}
+							>
+								{localDetails.finalClaimStatus ? 'Completed' : 'In Progress'}
+							</span>
 						</label>
-						<input
-							className="custom-input"
-							type="date"
-							id="returnToCustomerDt"
-							name="returnToCustomerDt"
-							value={localDetails.returnToCustomerDt ?? ''}
-							onChange={handleChange}
-						/>
-					</div>
-					<div className="flex flex-col gap-1 flex-1">
-						<label className="text-sm" htmlFor="finalClaimStatus">
-							Final Claim Status
-						</label>
-						<input
-							className="custom-input"
-							type="text"
-							id="finalClaimStatus"
-							name="finalClaimStatus"
-							value={localDetails.finalClaimStatus}
-							onChange={handleChange}
-						/>
 					</div>
 				</div>
 				<div className="flex items-center justify-end">
@@ -120,7 +160,7 @@ const Issuance: React.FC<IssuanceProps> = ({
 					</button>
 					<button
 						className="bg-brand-darker text-white rounded-md py-2 px-4 cursor-pointer"
-						onClick={onNext}
+						onClick={handleSave}
 					>
 						Save
 					</button>
