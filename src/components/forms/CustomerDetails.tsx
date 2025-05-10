@@ -27,15 +27,21 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 		...details,
 		leadRelation: details.leadRelation || 'new',
 	});
+	const [persistedDetails, setPersistedDetails] =
+		useState<CustomerDetailsState | null>(null);
 	const [errors, setErrors] = useState<ValidationErrors>({});
 	const {pathname} = useLocation();
 
 	useEffect(() => {
-		setLocalDetails({
+		const initialFormState = {
 			...details,
 			leadRelation: details.leadRelation || 'new',
-		});
-	}, [details]);
+		};
+		setLocalDetails(initialFormState);
+		if (!persistedDetails) {
+			setPersistedDetails(initialFormState);
+		}
+	}, [details, persistedDetails]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
@@ -97,25 +103,36 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			const claimId = pathname.split('/').pop();
-			const tabId = 1;
-			const payload = {
-				name: localDetails.customerName,
-				mobileNumber: localDetails.customerNumber,
-				billNumber: localDetails.billNumber,
-				billDate: localDetails.billDate,
-				docketNumber: localDetails.docketNumber,
-				leadRelation: localDetails.leadRelation,
-				complaintDetails: localDetails.complaintDetails,
-				additionalRemarks: localDetails.additionalRemarks,
-			};
-			try {
-				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
-				toast.success('Customer Details saved successfully');
+			const hasChanges =
+				JSON.stringify(localDetails) !== JSON.stringify(persistedDetails);
+
+			if (hasChanges) {
+				const claimId = pathname.split('/').pop();
+				const tabId = 1;
+				const payload = {
+					name: localDetails.customerName,
+					mobileNumber: localDetails.customerNumber,
+					billNumber: localDetails.billNumber,
+					billDate: localDetails.billDate,
+					docketNumber: localDetails.docketNumber,
+					leadRelation: localDetails.leadRelation,
+					complaintDetails: localDetails.complaintDetails,
+					additionalRemarks: localDetails.additionalRemarks,
+				};
+				try {
+					await apiAuth.post(
+						`/api/claims/addClaim/${claimId}/${tabId}`,
+						payload
+					);
+					toast.success('Customer Details saved successfully');
+					setPersistedDetails(localDetails); // Update snapshot after successful save
+					onNext();
+				} catch (error) {
+					toast.error('Something went wrong while saving customer details.');
+					console.error('Error during API call:', error);
+				}
+			} else {
 				onNext();
-			} catch (error) {
-				toast.error('Something went wrong');
-				console.error('Error during API call:', error);
 			}
 		}
 	};

@@ -29,14 +29,20 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 	onBack,
 }) => {
 	const [localDetails, setLocalDetails] = useState<TyreDetailsState>(details);
+	const [persistedDetails, setPersistedDetails] =
+		useState<TyreDetailsState | null>(null);
 	const [errors, setErrors] = useState<ValidationErrors>({});
 
 	useEffect(() => {
-		setLocalDetails({
+		const initialFormState = {
 			...details,
 			tyreSentDate: details.tyreSentDate ?? '',
-		});
-	}, [details]);
+		};
+		setLocalDetails(initialFormState);
+		if (!persistedDetails) {
+			setPersistedDetails(initialFormState);
+		}
+	}, [details, persistedDetails]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
@@ -84,24 +90,35 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			const claimId = window.location.pathname.split('/').pop();
-			const tabId = 2;
-			const payload = {
-				warrentyDetails: localDetails.warrentyDetails,
-				tyreSerialNumber: localDetails.tyreSerialNumber,
-				tyreSize: localDetails.tyreSize,
-				tyrePattern: localDetails.tyrePattern,
-				tyreCompany: localDetails.tyreCompany,
-				tyreSentDate: localDetails.tyreSentDate,
-				tyreSentThrough: localDetails.tyreSentThrough,
-			};
-			try {
-				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
-				toast.success('Tyre Details saved successfully');
+			const hasChanges =
+				JSON.stringify(localDetails) !== JSON.stringify(persistedDetails);
+
+			if (hasChanges) {
+				const claimId = window.location.pathname.split('/').pop();
+				const tabId = 2;
+				const payload = {
+					warrentyDetails: localDetails.warrentyDetails,
+					tyreSerialNumber: localDetails.tyreSerialNumber,
+					tyreSize: localDetails.tyreSize,
+					tyrePattern: localDetails.tyrePattern,
+					tyreCompany: localDetails.tyreCompany,
+					tyreSentDate: localDetails.tyreSentDate,
+					tyreSentThrough: localDetails.tyreSentThrough,
+				};
+				try {
+					await apiAuth.post(
+						`/api/claims/addClaim/${claimId}/${tabId}`,
+						payload
+					);
+					toast.success('Tyre Details saved successfully');
+					setPersistedDetails(localDetails); // Update snapshot after successful save
+					onNext();
+				} catch (error) {
+					toast.error('Something went wrong while saving tyre details.');
+					console.error('Error during API call:', error);
+				}
+			} else {
 				onNext();
-			} catch (error) {
-				toast.error('Something went wrong');
-				console.error('Error during API call:', error);
 			}
 		}
 	};

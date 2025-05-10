@@ -27,11 +27,17 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 }) => {
 	const [localDetails, setLocalDetails] =
 		useState<VehicleDetailsState>(details);
+	const [persistedDetails, setPersistedDetails] =
+		useState<VehicleDetailsState | null>(null);
 	const [errors, setErrors] = useState<ValidationErrors>({});
 
 	useEffect(() => {
-		setLocalDetails(details);
-	}, [details]);
+		const initialFormState = {...details};
+		setLocalDetails(initialFormState);
+		if (!persistedDetails) {
+			setPersistedDetails(initialFormState);
+		}
+	}, [details, persistedDetails]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
@@ -70,20 +76,31 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 	const handleNext = async () => {
 		const isValid = validateForm();
 		if (isValid) {
-			const claimId = window.location.pathname.split('/').pop();
-			const tabId = 3;
-			const payload = {
-				vehicleNumber: localDetails.vehicleNumber,
-				vehicleType: localDetails.type,
-				distanceCovered: localDetails.distanceCovered,
-			};
-			try {
-				await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
-				toast.success('Vehicle Details saved successfully');
+			const hasChanges =
+				JSON.stringify(localDetails) !== JSON.stringify(persistedDetails);
+
+			if (hasChanges) {
+				const claimId = window.location.pathname.split('/').pop();
+				const tabId = 3;
+				const payload = {
+					vehicleNumber: localDetails.vehicleNumber,
+					vehicleType: localDetails.type,
+					distanceCovered: localDetails.distanceCovered,
+				};
+				try {
+					await apiAuth.post(
+						`/api/claims/addClaim/${claimId}/${tabId}`,
+						payload
+					);
+					toast.success('Vehicle Details saved successfully');
+					setPersistedDetails(localDetails); // Update snapshot after successful save
+					onNext();
+				} catch (error) {
+					toast.error('Something went wrong while saving vehicle details.');
+					console.error('Error during API call:', error);
+				}
+			} else {
 				onNext();
-			} catch (error) {
-				toast.error('Something went wrong');
-				console.error('Error during API call:', error);
 			}
 		}
 	};
