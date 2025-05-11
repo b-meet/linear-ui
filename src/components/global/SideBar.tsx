@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {FaPlus, FaRegUser} from 'react-icons/fa';
 import {MdOutlineSpaceDashboard} from 'react-icons/md';
 import {GoSidebarCollapse, GoSidebarExpand} from 'react-icons/go';
@@ -20,26 +20,18 @@ const SideBar = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const dispatch = useAppDispatch();
-	const [addClaimId, setAddClaimId] = useState<string | null>(null);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-	useEffect(() => {
-		if (addClaimId) {
-			navigate(ROUTES.ADD_CLAIMS + '/' + addClaimId);
-		}
-	}, [addClaimId, navigate]);
 
 	const toggleSidebar = () => setIsOpen(!isOpen);
 
 	const addClaim = async () => {
-		if (!location.pathname.includes(ROUTES.ADD_CLAIMS)) {
-			try {
-				const data = await api.get<{data: string}>(API_ROUTES.ADD_CLAIMS);
-				setAddClaimId(data.data.toString());
-			} catch (error) {
-				console.error('Error initiating new claim in SideBar:', error);
-				toast.error('Failed to start a new claim. Please try again.');
-			}
+		try {
+			const response = await api.get<{data: string}>(API_ROUTES.ADD_CLAIMS);
+			const newClaimId = response.data.toString();
+			navigate(ROUTES.ADD_CLAIMS + '/' + newClaimId);
+		} catch (error) {
+			console.error('Error initiating new claim in SideBar:', error);
+			toast.error('Failed to start a new claim. Please try again.');
 		}
 	};
 
@@ -82,22 +74,28 @@ const SideBar = () => {
 				<div className="flex flex-col justify-between h-full">
 					<nav className="flex flex-col gap-1 text-sm">
 						<Link
-							to={'/dashboard'}
-							className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition"
+							to={ROUTES.DASHBOARD}
+							className={`flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition ${
+								location.pathname === ROUTES.DASHBOARD ? 'bg-gray-100' : ''
+							}`}
 						>
 							<MdOutlineSpaceDashboard className="text-xl" />
 							{isOpen && <span>Dashboard</span>}
 						</Link>
 						<Link
 							to={ROUTES.CLAIMS}
-							className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition"
+							className={`flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition ${
+								location.pathname === ROUTES.CLAIMS ? 'bg-gray-100' : ''
+							}`}
 						>
 							<MdOutlineLibraryBooks className="text-xl" />
 							{isOpen && <span>Claims</span>}
 						</Link>
 						<Link
-							to={'/customers'}
-							className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition"
+							to={ROUTES.CUSTOMERS}
+							className={`flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition ${
+								location.pathname === ROUTES.CUSTOMERS ? 'bg-gray-100' : ''
+							}`}
 						>
 							<FaRegUser className="text-xl" />
 							{isOpen && <span>Customers</span>}

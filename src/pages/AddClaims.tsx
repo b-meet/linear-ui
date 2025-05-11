@@ -9,6 +9,7 @@ import {
 	selectClaimsVehicleDetails,
 	selectClaimsIssuance,
 	ClaimsFormState,
+	resetForm,
 } from '../redux/slices/claimsFormSlice';
 import {storageServices} from '../utility/storageServices';
 import {FormSection, STORAGE_SERVICES} from '../type';
@@ -121,6 +122,13 @@ const AddClaims = () => {
 			);
 		}
 	}, [fullFormState]);
+
+	useEffect(() => {
+		return () => {
+			dispatch(resetForm());
+			storageServices.set(STORAGE_SERVICES.SESSION, CLAIMS_FORM_STORAGE_KEY);
+		};
+	}, [dispatch]);
 
 	const createInputChangeHandler = useCallback(
 		(section: FormSection) =>
