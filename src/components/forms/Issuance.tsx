@@ -1,8 +1,11 @@
 import React, {ChangeEvent, useState, useEffect, useCallback} from 'react';
-import {IssuanceState} from '../../redux/slices/claimsFormSlice';
+import {useDispatch} from 'react-redux';
+import {IssuanceState, resetForm} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 import {apiAuth} from '../../api/services';
 import {toast} from 'react-toastify';
+import {storageServices} from '../../utility/storageServices';
+import {STORAGE_SERVICES} from '../../type';
 
 interface IssuanceProps {
 	details: IssuanceState;
@@ -24,6 +27,7 @@ const Issuance: React.FC<IssuanceProps> = ({
 	onBack,
 }) => {
 	const [localDetails, setLocalDetails] = useState<IssuanceState>(details);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		setLocalDetails(details);
@@ -82,6 +86,8 @@ const Issuance: React.FC<IssuanceProps> = ({
 		try {
 			await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
 			toast.success('Issuance Details saved successfully');
+			dispatch(resetForm());
+			storageServices.set(STORAGE_SERVICES.SESSION, 'claimsForm'); // Attempt to clear session storage
 			onNext();
 		} catch (error) {
 			toast.error('Something went wrong while saving issuance details');

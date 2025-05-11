@@ -44,7 +44,7 @@ const AddClaims = () => {
 				setActiveSection('issuance');
 				break;
 			case 'issuance':
-				navigate('/claims');
+				navigate('/claims', {replace: true});
 				break;
 			default:
 				break;
