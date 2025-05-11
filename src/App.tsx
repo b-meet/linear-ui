@@ -12,6 +12,9 @@ import ProtectedRoute from './routing/ProtectedRoute';
 import PublicRoute from './routing/PublicRoute';
 import {storageServices} from './utility/storageServices';
 import {STORAGE_SERVICES} from './type';
+import {AllCommunityModule, ModuleRegistry} from 'ag-grid-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 const App = () => {
 	const authToken = storageServices.get(STORAGE_SERVICES.LOCAL, 'authToken');
