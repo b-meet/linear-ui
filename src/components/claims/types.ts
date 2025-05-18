@@ -28,6 +28,8 @@ export interface Claim {
 	distanceCovered?: string;
 	vehicleNumber?: string;
 	vehicleType?: string;
+	tyreSentDate?: string; // Added missing date field
+	returnToCustomerDt?: string; // Added missing date field
 	tyreImg?: string[];
 }
 
