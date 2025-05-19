@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {apiAuth} from '../api/services';
 import {API_ROUTES} from '../utility/constant';
+import EditCustomerModal from '../components/customer/EditCustomer';
 
 type Customer = {
 	_id: string;
@@ -18,6 +19,10 @@ const Customers = () => {
 	const [sortOption, setSortOption] = useState('newest');
 	const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null);
 
+	// Edit modal state
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+
 	useEffect(() => {
 		const fetchCustomers = async () => {
 			try {
@@ -32,6 +37,25 @@ const Customers = () => {
 
 		fetchCustomers();
 	}, []);
+
+	const handleOpenEditModal = (customer: Customer) => {
+		setEditingCustomer(customer);
+		setIsEditModalOpen(true);
+	};
+
+	const handleCloseEditModal = () => {
+		setIsEditModalOpen(false);
+		setEditingCustomer(null);
+	};
+
+	const handleUpdateCustomer = (updatedCustomer: Customer) => {
+		setCustomers(
+			customers.map((c) =>
+				c._id === updatedCustomer._id ? updatedCustomer : c
+			)
+		);
+		setExpandedCustomer(updatedCustomer._id);
+	};
 
 	const sortedCustomers = [...customers].sort((a, b) => {
 		if (sortOption === 'newest') {
@@ -270,13 +294,28 @@ const Customers = () => {
 							{expandedCustomer === customer._id && (
 								<div className="px-4 pb-4 pt-1 pl-16 bg-gray-50">
 									<div className="flex gap-4">
-										<button className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors">
+										<button
+											className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+											onClick={() => handleOpenEditModal(customer)}
+										>
 											Edit Details
 										</button>
-										<button className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors">
+										<button className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors">
 											View Activity
 										</button>
-										<button className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors">
+										<button
+											className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+											onClick={() => {
+												const phone = customer.mobileNumber.replace(/\D/g, '');
+												const message = encodeURIComponent(
+													`Hi ${customer.name}, This is a reminder from our service.`
+												);
+												window.open(
+													`https://wa.me/${phone}?text=${message}`,
+													'_blank'
+												);
+											}}
+										>
 											Send Message
 										</button>
 									</div>
@@ -350,6 +389,16 @@ const Customers = () => {
 						</button>
 					</div>
 				</div>
+			)}
+
+			{/* Edit Customer Modal */}
+			{editingCustomer && (
+				<EditCustomerModal
+					isOpen={isEditModalOpen}
+					onClose={handleCloseEditModal}
+					customer={editingCustomer}
+					onUpdate={handleUpdateCustomer}
+				/>
 			)}
 		</div>
 	);
