@@ -16,13 +16,18 @@ import {useAppDispatch} from '../../hooks/redux';
 import {userActions} from '../../redux/slices/userSlice/userSlice';
 
 const SideBar = () => {
-	const [isOpen, setIsOpen] = useState(true);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
+	const [isOpen, setIsOpen] = useState(
+		storageServices.get(STORAGE_SERVICES.LOCAL, 'siderbar') as boolean
+	);
 
-	const toggleSidebar = () => setIsOpen(!isOpen);
+	const toggleSidebar = () => {
+		setIsOpen(!isOpen);
+		storageServices.set(STORAGE_SERVICES.LOCAL, 'siderbar', !isOpen);
+	};
 
 	const addClaim = async () => {
 		try {

@@ -1,151 +1,185 @@
 import {ColDef} from 'ag-grid-community';
+import {Claim} from '../types';
+import ClaimStatusRenderer from './ClaimStatus';
 
-const COL_WIDHT = {
-	MIN: {
-		SHORT: 100,
-		MEDIUM: 150,
-		LONG: 250,
-	},
-	MAX: {
-		SHORT: 150,
-		MEDIUM: 200,
-		LONG: 300,
-	},
+const formatDate = (dateString: string | null | undefined): string => {
+	if (!dateString) return '';
+	try {
+		const date = new Date(dateString);
+		if (isNaN(date.getTime())) {
+			return dateString;
+		}
+		const options: Intl.DateTimeFormatOptions = {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric',
+		};
+		return date.toLocaleDateString('en-GB', options).replace(/\//g, ' ');
+	} catch (error) {
+		console.error('Error formatting date:', dateString, error);
+		return dateString;
+	}
 };
 
-export const claimFormColDefs: ColDef[] = [
+export const apiClaimColDefs: ColDef<Claim>[] = [
 	{
-		field: 'customerDetails.customerName',
-		headerName: 'Customer Name',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'customerDetails.customerNumber',
-		headerName: 'Mobile Number',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'customerDetails.billDate',
-		headerName: 'Bill Date',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'customerDetails.billNumber',
 		headerName: 'Bill Number',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'billNumber',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'customerDetails.docketNumber',
-		headerName: 'Docket Number',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		headerName: 'Customer Name',
+		field: 'customerId.name',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'customerDetails.leadRelation',
+		headerName: 'Mobile Number',
+		field: 'customerId.mobileNumber',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
 		headerName: 'Lead Relation',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'leadRelation',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'customerDetails.complaintDetails',
 		headerName: 'Complaint Details',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'complaintDetails',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'customerDetails.additionalRemarks',
-		headerName: 'Remarks',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-
-	{
-		field: 'tyreDetails.warrentyDetails',
-		headerName: 'Warranty Details',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		headerName: 'Docket Number',
+		field: 'docketNumber',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyreSerialNumber',
-		headerName: 'Serial Number',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		headerName: 'Additional Remarks',
+		field: 'additionalRemarks',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyrePattern',
+		headerName: 'Bill Date',
+		field: 'billDate',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+		valueFormatter: (params) => formatDate(params.value),
+	},
+	{
+		headerName: 'Tyre Company',
+		field: 'tyreCompany',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
 		headerName: 'Tyre Pattern',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'tyrePattern',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyreSize',
+		headerName: 'Tyre Sent Through',
+		field: 'tyreSentThrough',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
+		headerName: 'Tyre Serial Number',
+		field: 'tyreSerialNumber',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
 		headerName: 'Tyre Size',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'tyreSize',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyreSentDate',
-		headerName: 'Sent Date',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		headerName: 'Warranty Details',
+		field: 'warrentyDetails',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyreSentThrough',
-		headerName: 'Sent Through',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		headerName: 'Depreciation Amount',
+		field: 'depreciationAmt',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'tyreDetails.tyreCompany',
-		headerName: 'Company',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-
-	{
-		field: 'vehicleDetails.vehicleNumber',
-		headerName: 'Vehicle No.',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'vehicleDetails.type',
-		headerName: 'Vehicle Type',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'vehicleDetails.distanceCovered',
 		headerName: 'Distance Covered',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-
-	{
-		field: 'issuance.depreciationAmt',
-		headerName: 'Depreciation Amt',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'distanceCovered',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 	{
-		field: 'issuance.claimStatusByCompany',
+		headerName: 'Vehicle Number',
+		field: 'vehicleNumber',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
+		headerName: 'Vehicle Type',
+		field: 'vehicleType',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+	},
+	{
+		headerName: 'Tyre Sent Date',
+		field: 'tyreSentDate',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+		valueFormatter: (params) => formatDate(params.value),
+	},
+	{
+		headerName: 'Return Date',
+		field: 'returnToCustomerDt',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+		valueFormatter: (params) => formatDate(params.value),
+	},
+	{
 		headerName: 'Claim Status',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
+		field: 'claimStatusByCompany',
+		sortable: true,
+		filter: true,
+		minWidth: 150,
+		cellRenderer: ClaimStatusRenderer,
 	},
 	{
-		field: 'issuance.returnToCustomerDt',
-		headerName: 'Returned Date',
-		minWidth: COL_WIDHT.MIN.SHORT,
-		maxWidth: COL_WIDHT.MAX.LONG,
-	},
-	{
-		field: 'issuance.finalClaimStatus',
-		headerName: 'Final Status',
+		headerName: 'Final Claim Status',
+		field: 'finalClaimStatus',
 		cellRenderer: 'agCheckboxCellRenderer',
+		cellRendererParams: {disabled: true},
+		sortable: true,
+		filter: true,
+		minWidth: 150,
 	},
 ];
