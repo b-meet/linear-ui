@@ -5,9 +5,10 @@ const ClaimStatusRenderer = (props: any) => {
 	return (
 		<span
 			className={`
-        ${status === 'pending' && 'bg-yellow-200 text-yellow-800'} 
-        ${status === 'accepted' && 'bg-emerald-200 text-emerald-800'} 
-        font-bold py-1 px-4 rounded-full
+        ${status === 'pending' && 'bg-yellow-500 text-white'} 
+        ${status === 'accepted' && 'bg-emerald-500 text-white'} 
+        ${status === 'rejected' && 'bg-red-500 text-white'} 
+        py-1 px-4 rounded-full
       `}
 		>
 			{status}
