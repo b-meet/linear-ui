@@ -8,7 +8,7 @@ import {API_ROUTES} from '../../utility/constant';
 import {apiUnAuth} from '../../api/services';
 import {toast} from 'react-toastify';
 import {ILoginResponse} from '../../type';
-import GlobalModal from '../../components/global/GlobalModal'; // Import GlobalModal
+import GlobalModal from '../../components/global/GlobalModal';
 
 interface User {
 	email: string;
@@ -23,7 +23,11 @@ interface Errors {
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [otp, setOtp] = useState('');
+	const [newPassword, setNewPassword] = useState('');
+	const [isResendDisabled, setIsResendDisabled] = useState(false);
+	const [resendTimer, setResendTimer] = useState(60);
 	const [user, setUser] = useState<User>({email: '', password: ''});
 	const [errors, setErrors] = useState<Errors>({email: '', password: ''});
 	const navigate = useNavigate();
@@ -93,6 +97,85 @@ const Login = () => {
 		}
 	};
 
+	const handleForgotPass = async () => {
+		if (user.email) {
+			setShowModal(true);
+			setIsLoading(true);
+			setIsResendDisabled(true);
+			setResendTimer(60);
+			const timer = setInterval(() => {
+				setResendTimer((prev) => {
+					if (prev <= 1) {
+						clearInterval(timer);
+						setIsResendDisabled(false);
+						return 60;
+					}
+					return prev - 1;
+				});
+			}, 1000);
+			try {
+				const response = await apiUnAuth.post<
+					{email: string},
+					{status: number; message: string}
+				>(API_ROUTES.FORGOT_PASSWORD, {
+					email: user.email,
+				});
+				if (response.status === 200) {
+					toast(response.message);
+				}
+			} catch (error: unknown) {
+				console.error(
+					(error as {response: {data: {message: string}}}).response?.data
+						?.message || 'Error sending OTP'
+				);
+				toast(
+					(error as {response: {data: {message: string}}}).response?.data
+						?.message || 'Error sending OTP'
+				);
+			} finally {
+				setIsLoading(false);
+			}
+		} else {
+			alert('Please enter your email first!');
+		}
+	};
+
+	const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setNewPassword(e.target.value);
+	};
+
+	const handleOtpVerification = async () => {
+		if (otp.length === 6 && newPassword) {
+			try {
+				const response = await apiUnAuth.post<
+					{email: string; otp: string; newPassword?: string},
+					{status: number; message: string}
+				>(API_ROUTES.VERIFY_OTP, {
+					email: user.email,
+					otp,
+					newPassword,
+				});
+				if (response.status === 200) {
+					toast(response.message);
+					setShowModal(false);
+					setNewPassword('');
+					setOtp('');
+				}
+			} catch (error: unknown) {
+				console.error(
+					(error as {response: {data: {message: string}}}).response?.data
+						?.message || 'Error verifying OTP'
+				);
+				toast(
+					(error as {response: {data: {message: string}}}).response?.data
+						?.message || 'Error verifying OTP'
+				);
+			}
+		} else {
+			alert('Please enter a valid OTP and new password');
+		}
+	};
+
 	return (
 		<>
 			<div className="shadow-sm py-4 px-8 rounded-md w-[400px] flex flex-col gap-4">
@@ -135,13 +218,7 @@ const Login = () => {
 					<button
 						type="button"
 						className="text-sm text-blue-700 cursor-pointer max-w-max hover:underline"
-						onClick={() => {
-							if (user.email) {
-								setShowModal(true);
-							} else {
-								alert('Please enter your email first!');
-							}
-						}}
+						onClick={handleForgotPass}
 					>
 						Forgot password?
 					</button>
@@ -169,6 +246,7 @@ const Login = () => {
 				isOpen={showModal}
 				onClose={() => setShowModal(false)}
 				title="Enter OTP"
+				isLoading={isLoading}
 			>
 				<div>
 					<p className="text-sm mb-4 text-gray-600">
@@ -177,14 +255,34 @@ const Login = () => {
 							{user.email || 'your email'}
 						</span>
 					</p>
-					<input
-						type="text"
-						maxLength={6}
-						value={otp}
-						onChange={(e) => setOtp(e.target.value)}
-						className="w-full border border-gray-300 rounded-md text-center p-2 text-lg tracking-widest"
-						placeholder="Enter OTP"
-					/>
+					<div className="flex flex-col items-end gap-3">
+						<div className="flex flex-col gap-3 w-full">
+							<input
+								type="text"
+								maxLength={6}
+								value={otp}
+								onChange={(e) => setOtp(e.target.value)}
+								className="custom-input"
+								placeholder="Enter OTP"
+							/>
+							<input
+								type="password"
+								value={newPassword}
+								onChange={handleNewPasswordChange}
+								className="custom-input"
+								placeholder="Enter New Password"
+							/>
+						</div>
+						<button
+							className={`text-xs  ${isResendDisabled ? 'text-gray-400 cursor-not-allowed' : 'cursor-pointer'}`}
+							onClick={handleForgotPass}
+							disabled={isResendDisabled}
+						>
+							{isResendDisabled
+								? `Resend OTP in ${resendTimer}s`
+								: 'Resend OTP?'}
+						</button>
+					</div>
 					<div className="flex justify-end gap-2 mt-4">
 						<button
 							className="cursor-pointer text-sm px-3 py-1 rounded-md border border-gray-400"
@@ -192,7 +290,10 @@ const Login = () => {
 						>
 							Cancel
 						</button>
-						<button className="cursor-pointer bg-brand text-white px-3 py-1 rounded-md text-sm">
+						<button
+							onClick={handleOtpVerification}
+							className="cursor-pointer bg-brand text-white px-3 py-1 rounded-md text-sm"
+						>
 							{/* Add OTP verification logic here */}
 							Verify
 						</button>

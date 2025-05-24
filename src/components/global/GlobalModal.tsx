@@ -5,6 +5,7 @@ interface GlobalModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	title?: string;
+	isLoading?: boolean;
 	children: React.ReactNode;
 }
 
@@ -12,6 +13,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 	isOpen,
 	onClose,
 	title,
+	isLoading = false,
 	children,
 }) => {
 	if (!isOpen) {
@@ -30,6 +32,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 						<IoCloseSharp />
 					</button>
 				</div>
+				{isLoading && (
+					<div className="absolute inset-0 flex items-center justify-center bg-[#000000BB] z-50 rounded-lg">
+						<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand"></div>
+					</div>
+				)}
 				<div>{children}</div>
 			</div>
 		</div>
