@@ -20,6 +20,7 @@ const SideBar = () => {
 	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
+	const [showUserDropdown, setShowUserDropdown] = useState(false);
 	const [isOpen, setIsOpen] = useState(
 		storageServices.get(STORAGE_SERVICES.LOCAL, 'siderbar') as boolean
 	);
@@ -106,12 +107,32 @@ const SideBar = () => {
 							{isOpen && <span>Customers</span>}
 						</Link>
 					</nav>
-					<button
-						className="inline-block py-2 rounded-md bg-[#F9F9F9] hover:bg-slate-200 cursor-pointer"
-						onClick={() => setShowLogoutModal(true)}
-					>
-						Log out
-					</button>
+					<div className="relative">
+						<button
+							className={`inline-block p-2 rounded-md hover:bg-[#F9F9F9] ${showUserDropdown ? 'bg-[#F9F9F9]' : ''} cursor-pointer w-full text-left`}
+							onClick={() => setShowUserDropdown(!showUserDropdown)}
+						>
+							<div className="flex gap-3 items-center">
+								<span className="w-8 h-8 font-bold grid place-items-center rounded-full bg-brand-light-hover">
+									U
+								</span>
+								{isOpen && <span>Username</span>}
+							</div>
+						</button>
+						{showUserDropdown && (
+							<div className="absolute bottom-full left-0 mb-2 w-full bg-white border border-gray-200 rounded-md shadow-md z-10">
+								<button
+									className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+									onClick={() => {
+										setShowLogoutModal(true);
+										setShowUserDropdown(false);
+									}}
+								>
+									Logout
+								</button>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 			<GlobalModal

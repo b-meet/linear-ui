@@ -4,10 +4,45 @@ import {themeAlpine, ColDef} from 'ag-grid-community';
 import {getClaimsData} from './dataSource';
 import {Claim} from './types';
 import {apiClaimColDefs} from './fields/defaults';
+import {API_ROUTES} from '../../utility/constant';
+import {ICellRendererParams} from 'ag-grid-community';
+import {FiDownload} from 'react-icons/fi';
+import {API_BASE_URL} from '../../utility/environment';
+
+export const CustomActionsRenderer = (params: ICellRendererParams) => {
+	const downloadAcknowledgement = async (id: string | number) => {
+		window.open(
+			`${API_BASE_URL}/${API_ROUTES.GET_CLAIM_CUSTOMER_PDF}/${id}`,
+			'_blank'
+		);
+	};
+
+	return (
+		<button
+			onClick={() => downloadAcknowledgement(params.data._id)}
+			title="Download Acknowledgement"
+			className="cursor-pointer text-brand hover:text-brand-hover"
+		>
+			<FiDownload />
+		</button>
+	);
+};
 
 const ResultTable = () => {
 	const gridRef = useRef<AgGridReact | null>(null);
-	const [columnDefs, setColumnDefs] = useState<ColDef[]>(apiClaimColDefs);
+	const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+		...apiClaimColDefs,
+		{
+			headerName: 'Actions',
+			field: 'actions',
+			cellRenderer: CustomActionsRenderer,
+			minWidth: 100,
+			maxWidth: 120,
+			resizable: false,
+			sortable: false,
+			filter: false,
+		},
+	]);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
 	const [rowData, setRowData] = useState<Claim[]>([]);
 	const [columnVisibility, setColumnVisibility] = useState<

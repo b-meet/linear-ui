@@ -213,11 +213,11 @@ const Customers = () => {
 							>
 								<div className="flex items-center gap-3">
 									<div className="bg-blue-100 text-blue-800 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
-										{getInitials(customer.name.trim())}
+										{getInitials(customer?.name?.trim())}
 									</div>
 									<div>
 										<h3 className="text-lg font-medium text-gray-800">
-											{customer.name.trim()}
+											{customer?.name?.trim()}
 										</h3>
 										<div className="flex items-center text-sm text-gray-500">
 											<svg
