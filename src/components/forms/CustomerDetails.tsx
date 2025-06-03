@@ -147,22 +147,6 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 				<div className="flex flex-col gap-3">
 					<div className="flex gap-4">
 						<div className="flex flex-col gap-1 flex-1">
-							<label className="text-sm" htmlFor="customerName">
-								Name*
-							</label>
-							<input
-								className="custom-input"
-								type="text"
-								id="customerName"
-								name="customerName"
-								value={localDetails.customerName}
-								onChange={handleChange}
-							/>
-							{errors.customerName && (
-								<p className="text-red-500 text-xs">{errors.customerName}</p>
-							)}
-						</div>
-						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="customerNumber">
 								Phone Number*
 							</label>
@@ -176,6 +160,22 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = ({
 							/>
 							{errors.customerNumber && (
 								<p className="text-red-500 text-xs">{errors.customerNumber}</p>
+							)}
+						</div>
+						<div className="flex flex-col gap-1 flex-1">
+							<label className="text-sm" htmlFor="customerName">
+								Name*
+							</label>
+							<input
+								className="custom-input"
+								type="text"
+								id="customerName"
+								name="customerName"
+								value={localDetails.customerName}
+								onChange={handleChange}
+							/>
+							{errors.customerName && (
+								<p className="text-red-500 text-xs">{errors.customerName}</p>
 							)}
 						</div>
 					</div>

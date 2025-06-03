@@ -161,6 +161,7 @@ const ResultTable = () => {
 						columnDefs={columnDefs}
 						theme={customeTheme}
 						defaultColDef={defaultColDef}
+						singleClickEdit
 					/>
 				</div>
 			</div>

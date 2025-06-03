@@ -99,6 +99,7 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		sortable: true,
 		filter: true,
 		minWidth: 150,
+		editable: true,
 	},
 	{
 		headerName: 'Tyre Serial Number',
@@ -156,6 +157,26 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		filter: true,
 		minWidth: 150,
 		valueFormatter: (params) => formatDate(params.value),
+		editable: true,
+		cellEditor: 'agDateCellEditor',
+		cellEditorPopup: true,
+		valueGetter: (params) => {
+			if (!params.data) return null;
+			const dateString = params.data.tyreSentDate;
+			if (!dateString) return null;
+			const date = new Date(dateString);
+			return isNaN(date.getTime()) ? null : date;
+		},
+		valueSetter: (params) => {
+			if (!params.data) return false;
+			const date = params.newValue;
+			if (!date) {
+				params.data.tyreSentDate = undefined;
+			} else {
+				params.data.tyreSentDate = date.toISOString();
+			}
+			return true;
+		},
 	},
 	{
 		headerName: 'Return Date',
@@ -172,6 +193,11 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		filter: true,
 		minWidth: 150,
 		cellRenderer: ClaimStatusRenderer,
+		editable: true,
+		cellEditor: 'agSelectCellEditor',
+		cellEditorParams: {
+			values: ['accepted', 'rejected', 'pending'],
+		},
 	},
 	{
 		headerName: 'Final Claim Status',

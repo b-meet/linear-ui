@@ -215,7 +215,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 								onChange={handleChange}
 							/>
 						</div>
-						<div className="flex flex-col gap-1 flex-1">
+						{/* <div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="tyreSentDate">
 								Tyre Sent Date
 							</label>
@@ -227,9 +227,9 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 								value={localDetails.tyreSentDate ?? ''}
 								onChange={handleChange}
 							/>
-						</div>
+						</div> */}
 					</div>
-					<div className="flex flex-col gap-1 flex-1">
+					{/* <div className="flex flex-col gap-1 flex-1">
 						<label className="text-sm" htmlFor="tyreSentThrough">
 							Tyre Sent Through (Courier/Transporter)
 						</label>
@@ -241,7 +241,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 							value={localDetails.tyreSentThrough}
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 				</div>
 				<div className="flex items-center justify-end">
 					<button
