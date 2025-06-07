@@ -2,7 +2,10 @@ import {FaBars} from 'react-icons/fa';
 import {IoFilterSharp} from 'react-icons/io5';
 import {LuLayoutGrid} from 'react-icons/lu';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-import {setViewMode} from '../../redux/slices/claimsFiltersSlice';
+import {
+	selectAppliedFiltersCount,
+	setViewMode,
+} from '../../redux/slices/claimsFiltersSlice';
 import {VIEW_MODES} from '../../utility/constant';
 
 interface PageHeaderProps {
@@ -12,6 +15,7 @@ interface PageHeaderProps {
 const PageHeader: React.FC<PageHeaderProps> = ({onFilterClick}) => {
 	const dispatch = useAppDispatch();
 	const {viewMode} = useAppSelector((state) => state.claimsFilter);
+	const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
 
 	const toggleViewMode = (mode: string) => {
 		dispatch(setViewMode(mode));
@@ -33,7 +37,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({onFilterClick}) => {
 						onClick={onFilterClick}
 						className="text-slate-600 rounded-sm border border-slate-400 py-2 px-3 text-sm flex items-center gap-2 cursor-pointer hover:border-slate-700 hover:text-slate-900"
 					>
-						<IoFilterSharp /> Filters (0)
+						<IoFilterSharp /> Filters ({appliedFiltersCount})
 					</button>
 					<form>
 						<div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {VIEW_MODES} from '../../utility/constant';
+import {RootState} from '..';
 
 export interface ClaimFilters {
 	claimStatusByCompany?: string[];
@@ -17,6 +18,13 @@ const initialState: ClaimFilters = {
 	billDateTo: '',
 	viewMode: VIEW_MODES.LIST,
 };
+
+const filterKeys: (keyof ClaimFilters)[] = [
+	'claimStatusByCompany',
+	'tyreCompany',
+	'billDateFrom',
+	'billDateTo',
+];
 
 const claimFiltersSlice = createSlice({
 	name: 'claimFilters',
@@ -42,4 +50,21 @@ const claimFiltersSlice = createSlice({
 
 export const {setFilter, setMultipleFilters, resetFilters, setViewMode} =
 	claimFiltersSlice.actions;
+export const selectFilters = (state: RootState) => state.claimsFilter;
+
+export const selectAppliedFiltersCount = createSelector(
+	[selectFilters],
+	(filters: ClaimFilters) => {
+		return filterKeys.reduce((count, key) => {
+			const value = filters[key];
+			if (Array.isArray(value)) {
+				return count + value.length;
+			} else if (typeof value === 'string' && value.trim()) {
+				return count + 1;
+			}
+			return count;
+		}, 0);
+	}
+);
+
 export const claimFiltersReducer = claimFiltersSlice.reducer;
