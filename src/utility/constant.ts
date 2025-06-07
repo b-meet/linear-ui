@@ -12,21 +12,21 @@ export const API_ROUTES = {
 };
 
 export const TYRE_COMPANIES = [
-	'MRF',
 	'Apollo Tyres',
-	'CEAT',
-	'JK Tyre & Industries',
-	'Birla Tyres',
-	'TVS Eurogrip',
-	'Bridgestone India',
-	'Michelin India',
-	'Goodyear India',
-	'Continental Tyres India',
-	'Yokohama India',
-	'Ralco Tyres',
 	'BKT (Balkrishna Industries)',
-	'Metro Tyres',
+	'Birla Tyres',
+	'Bridgestone India',
+	'CEAT',
+	'Continental Tyres India',
+	'Goodyear India',
+	'JK Tyre & Industries',
 	'Kenda Tyres',
+	'Metro Tyres',
+	'Michelin India',
+	'MRF',
+	'Ralco Tyres',
+	'TVS Eurogrip',
+	'Yokohama India',
 ];
 
 export enum TyreCompany {

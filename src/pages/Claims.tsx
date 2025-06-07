@@ -1,7 +1,9 @@
 import React from 'react';
 import ResultTable from '../components/claims/ResultTable';
 import PageHeader from '../components/pageHeader/PageHeader';
-import ClaimFilterModal from '../components/claims/filtersModal';
+import ClaimFilterModal, {
+	ClaimFilters,
+} from '../components/claims/filtersModal';
 
 const Claims = () => {
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -10,8 +12,8 @@ const Claims = () => {
 		setIsModalOpen(!isModalOpen);
 	};
 
-	const applyFilters = () => {
-		console.log('applyFilters');
+	const applyFilters = (filters: ClaimFilters) => {
+		console.log(filters, 'applyFilters');
 	};
 
 	return (
