@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react';
 import {apiAuth} from '../api/services';
 import {API_ROUTES} from '../utility/constant';
 import EditCustomerModal from '../components/customer/EditCustomer';
+import {useNavigate} from 'react-router';
+import {ROUTES} from '../routing/routes';
 
 type Customer = {
 	_id: string;
@@ -12,6 +14,7 @@ type Customer = {
 };
 
 const Customers = () => {
+	const navigate = useNavigate();
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -91,6 +94,11 @@ const Customers = () => {
 			.map((part) => part[0])
 			.join('')
 			.toUpperCase();
+	};
+
+	const handleCheckHistory = (id: string) => {
+		console.log(id);
+		navigate(ROUTES.CLAIMS);
 	};
 
 	if (loading) {
@@ -300,8 +308,11 @@ const Customers = () => {
 										>
 											Edit Details
 										</button>
-										<button className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors">
-											View Activity
+										<button
+											className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+											onClick={() => handleCheckHistory(customer._id)}
+										>
+											View History
 										</button>
 										<button
 											className="px-3 py-1 text-sm cursor-pointer text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
