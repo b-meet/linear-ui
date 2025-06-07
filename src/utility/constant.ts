@@ -46,3 +46,8 @@ export enum TyreCompany {
 	Metro = 'Metro Tyres',
 	Kenda = 'Kenda Tyres',
 }
+
+export const VIEW_MODES = {
+	LIST: 'list',
+	GRID: 'grid',
+};
