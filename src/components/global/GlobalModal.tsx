@@ -20,7 +20,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 		return null;
 	}
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000AF]">
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
 			<div className="bg-white rounded-lg shadow-xl p-4 w-full max-w-md relative">
 				<div className="flex items-center justify-between mb-3">
 					{title ? <h2 className="text-xl font-semibold">{title}</h2> : <div />}

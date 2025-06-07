@@ -3,6 +3,7 @@ import {TyreDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 import {apiAuth} from '../../api/services';
 import {toast} from 'react-toastify';
+import {TYRE_COMPANIES} from '../../utility/constant';
 
 interface ValidationErrors {
 	warrentyDetails?: string;
@@ -14,7 +15,9 @@ interface ValidationErrors {
 interface TyreDetailsProps {
 	details: TyreDetailsState;
 	onChange: (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => void;
 	onNext: () => void;
 	onBack: () => void;
@@ -46,21 +49,36 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedOnChange = useCallback(
-		debounce((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-			onChange(event);
-		}, DEBOUNCE_DELAY),
+		debounce(
+			(
+				event: ChangeEvent<
+					HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+				>
+			) => {
+				onChange(event);
+			},
+			DEBOUNCE_DELAY
+		),
 		[onChange]
 	);
 
 	const handleChange = (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		event: ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
 	) => {
 		const {name, value} = event.target;
+
 		setLocalDetails((prevDetails) => ({
 			...prevDetails,
 			[name]: value,
 		}));
-		debouncedOnChange(event);
+
+		if (event.target.tagName === 'SELECT') {
+			onChange(event);
+		} else {
+			debouncedOnChange(event);
+		}
 	};
 
 	const validateForm = () => {
@@ -206,14 +224,20 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 							<label className="text-sm" htmlFor="tyreCompany">
 								Brand
 							</label>
-							<input
+							<select
 								className="custom-input"
-								type="text"
 								id="tyreCompany"
 								name="tyreCompany"
 								value={localDetails.tyreCompany}
 								onChange={handleChange}
-							/>
+							>
+								<option value="">Select a brand</option>
+								{TYRE_COMPANIES.map((company) => (
+									<option key={company} value={company}>
+										{company}
+									</option>
+								))}
+							</select>
 						</div>
 						<div className="flex flex-col gap-1 flex-1">
 							<label className="text-sm" htmlFor="tyreSentDate">

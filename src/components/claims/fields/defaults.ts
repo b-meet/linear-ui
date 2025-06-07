@@ -1,6 +1,7 @@
 import {ColDef} from 'ag-grid-community';
 import {Claim} from '../types';
 import ClaimStatusRenderer from './ClaimStatus';
+import EditableColHeader from './EditableColHeader';
 
 const formatDate = (dateString: string | null | undefined): string => {
 	if (!dateString) return '';
@@ -94,7 +95,10 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		minWidth: 150,
 	},
 	{
-		headerName: 'Tyre Sent Through',
+		headerComponent: EditableColHeader,
+		headerComponentParams: {
+			displayName: 'Tyre Sent Through',
+		},
 		field: 'tyreSentThrough',
 		sortable: true,
 		filter: true,
@@ -151,7 +155,10 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		minWidth: 150,
 	},
 	{
-		headerName: 'Tyre Sent Date',
+		headerComponent: EditableColHeader,
+		headerComponentParams: {
+			displayName: 'Tyre Sent Date',
+		},
 		field: 'tyreSentDate',
 		sortable: true,
 		filter: true,
@@ -187,7 +194,10 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		valueFormatter: (params) => formatDate(params.value),
 	},
 	{
-		headerName: 'Claim Status',
+		headerComponent: EditableColHeader,
+		headerComponentParams: {
+			displayName: 'Claim Status',
+		},
 		field: 'claimStatusByCompany',
 		sortable: true,
 		filter: true,

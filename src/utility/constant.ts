@@ -10,3 +10,39 @@ export const API_ROUTES = {
 	GET_CUSTOMER: 'api/customers/getCustomers',
 	GET_CLAIM_CUSTOMER_PDF: 'api/claims/getClaimPdf',
 };
+
+export const TYRE_COMPANIES = [
+	'MRF',
+	'Apollo Tyres',
+	'CEAT',
+	'JK Tyre & Industries',
+	'Birla Tyres',
+	'TVS Eurogrip',
+	'Bridgestone India',
+	'Michelin India',
+	'Goodyear India',
+	'Continental Tyres India',
+	'Yokohama India',
+	'Ralco Tyres',
+	'BKT (Balkrishna Industries)',
+	'Metro Tyres',
+	'Kenda Tyres',
+];
+
+export enum TyreCompany {
+	MRF = 'MRF',
+	Apollo = 'Apollo Tyres',
+	CEAT = 'CEAT',
+	JK = 'JK Tyre & Industries',
+	Birla = 'Birla Tyres',
+	TVS = 'TVS Eurogrip',
+	Bridgestone = 'Bridgestone India',
+	Michelin = 'Michelin India',
+	Goodyear = 'Goodyear India',
+	Continental = 'Continental Tyres India',
+	Yokohama = 'Yokohama India',
+	Ralco = 'Ralco Tyres',
+	BKT = 'BKT (Balkrishna Industries)',
+	Metro = 'Metro Tyres',
+	Kenda = 'Kenda Tyres',
+}

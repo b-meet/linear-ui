@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
+import {TyreCompany} from '../../utility/constant';
 
 export interface CustomerDetailsState {
 	customerName: string;
@@ -19,7 +20,7 @@ export interface TyreDetailsState {
 	tyreSize: string;
 	tyreSentDate: string | null;
 	tyreSentThrough: string;
-	tyreCompany: string;
+	tyreCompany: TyreCompany | '';
 	tyreImg?: string[];
 }
 
