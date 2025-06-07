@@ -1,11 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {userReducer} from './slices/userSlice/userSlice';
-import {claimsFormReducer} from './slices/claimsFormSlice'; // Import the new claims form reducer
+import {claimsFormReducer} from './slices/claimsFormSlice';
+import {claimFiltersReducer} from './slices/claimsFiltersSlice';
 
 const store = configureStore({
 	reducer: {
 		user: userReducer,
-		claimsForm: claimsFormReducer, // Use the claims form reducer
+		claimsForm: claimsFormReducer,
+		claimsFilter: claimFiltersReducer,
 	},
 });
 

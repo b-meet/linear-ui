@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
 import {BiCalendar, BiSearchAlt2} from 'react-icons/bi';
 import {CgClose, CgOrganisation} from 'react-icons/cg';
 import {FiFileText, FiFilter, FiRotateCcw} from 'react-icons/fi';
 import {TYRE_COMPANIES} from '../../utility/constant';
 import clsx from 'clsx';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {resetFilters, setFilter} from '../../redux/slices/claimsFiltersSlice';
 
 export interface ClaimFilters {
 	claimStatusByCompany?: string[] | string;
@@ -16,28 +17,19 @@ interface ClaimFilterModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onApplyFilters: (filters: ClaimFilters) => void;
-	initialFilters?: ClaimFilters;
 }
 
 const ClaimFilterModal: React.FC<ClaimFilterModalProps> = ({
 	isOpen,
 	onClose,
 	onApplyFilters,
-	initialFilters = {},
 }) => {
-	const [filters, setFilters] = useState<ClaimFilters>({
-		claimStatusByCompany: [],
-		tyreCompany: [],
-		billDateFrom: '',
-		billDateTo: '',
-		...initialFilters,
-	});
+	const dispatch = useAppDispatch();
+	const filters = useAppSelector((state) => state.claimsFilter);
 
-	const handleChange = (
-		field: keyof ClaimFilters,
-		value: string | string[]
-	) => {
-		setFilters((prev) => ({...prev, [field]: value}));
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const handleChange = (field: keyof ClaimFilters, value: any) => {
+		dispatch(setFilter({field, value}));
 	};
 
 	const handleArrayCheckboxChange = (
@@ -45,27 +37,23 @@ const ClaimFilterModal: React.FC<ClaimFilterModalProps> = ({
 		item: string,
 		checked: boolean
 	) => {
-		const currentValues = Array.isArray(filters[field])
-			? (filters[field] as string[])
-			: filters[field]
-				? [filters[field] as string]
+		const currentValue = filters[field];
+
+		const currentValues = Array.isArray(currentValue)
+			? currentValue
+			: typeof currentValue === 'string' && currentValue
+				? [currentValue]
 				: [];
 
 		const updated = checked
 			? [...currentValues, item]
 			: currentValues.filter((val) => val !== item);
 
-		handleChange(field, updated);
+		dispatch(setFilter({field, value: updated}));
 	};
 
-	const handleReset = (): void => {
-		const resetFilters = {
-			claimStatusByCompany: [],
-			tyreCompany: [],
-			billDateFrom: '',
-			billDateTo: '',
-		};
-		setFilters(resetFilters);
+	const handleReset = () => {
+		dispatch(resetFilters());
 		onApplyFilters({});
 		onClose();
 	};
