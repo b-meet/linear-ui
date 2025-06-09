@@ -117,7 +117,7 @@ const ResultTable = () => {
 	}, []);
 
 	return (
-		<div className="flex h-[calc(100vh_-_125px)] w-full relative">
+		<div className="flex h-[calc(100vh_-_135px)] w-full relative">
 			<div className="flex flex-row-reverse flex-1">
 				<div className="relative w-8 rounded-tl-md rounded-tr-md">
 					<button

@@ -4,6 +4,7 @@ import {API_ROUTES} from '../utility/constant';
 import EditCustomerModal from '../components/customer/EditCustomer';
 import {useNavigate} from 'react-router';
 import {ROUTES} from '../routing/routes';
+import PageHeader from '../components/pageHeader/PageHeader';
 
 type Customer = {
 	_id: string;
@@ -18,8 +19,6 @@ const Customers = () => {
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [searchQuery, setSearchQuery] = useState('');
-	const [sortOption, setSortOption] = useState('newest');
 	const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null);
 
 	// Edit modal state
@@ -59,17 +58,6 @@ const Customers = () => {
 		);
 		setExpandedCustomer(updatedCustomer._id);
 	};
-
-	const sortedCustomers = [...customers].sort((a, b) => {
-		if (sortOption === 'newest') {
-			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-		} else if (sortOption === 'oldest') {
-			return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-		} else if (sortOption === 'name') {
-			return a.name.localeCompare(b.name);
-		}
-		return 0;
-	});
 
 	const formatDate = (dateString: string) => {
 		const options: Intl.DateTimeFormatOptions = {
@@ -142,75 +130,17 @@ const Customers = () => {
 	}
 
 	return (
-		<div className="max-w-6xl h-full mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-			<div className="px-6 py-4 bg-brand flex justify-between items-center">
-				<h1 className="text-xl font-bold text-white">Customers</h1>
-				<span className="bg-brand-lighter text-slate-600 text-sm font-medium px-3 py-1 rounded-full">
-					{customers.length} Total
-				</span>
-			</div>
-
-			<div className="p-4 bg-white border-b border-gray-200 flex flex-col md:flex-row gap-4">
-				<div className="relative flex-grow">
-					<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="h-5 w-5 text-gray-400"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-							/>
-						</svg>
-					</div>
-					<input
-						type="text"
-						placeholder="Search customers..."
-						className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-					/>
-				</div>
-
-				<div className="flex gap-2">
-					<div className="relative">
-						<select
-							className="appearance-none bg-gray-100 border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-							value={sortOption}
-							onChange={(e) => setSortOption(e.target.value)}
-						>
-							<option value="newest">Newest First</option>
-							<option value="oldest">Oldest First</option>
-							<option value="name">Name (A-Z)</option>
-						</select>
-						<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-4 w-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M19 9l-7 7-7-7"
-								/>
-							</svg>
-						</div>
-					</div>
-				</div>
-			</div>
-
+		<>
+			<PageHeader
+				heading="Customers"
+				totalCount={customers.length}
+				searchPlaceholder="Search by customer name or mobile number"
+				showFilter={false}
+				showViewSwitcher={false}
+			/>
 			<div className="divide-green-200 h-[calc(75%)]">
-				{sortedCustomers.length > 0 ? (
-					sortedCustomers.map((customer) => (
+				{customers.length > 0 ? (
+					customers.map((customer) => (
 						<div
 							key={customer._id}
 							className="hover:bg-gray-50 transition-colors border-b-1 border-brand-lighter"
@@ -377,31 +307,6 @@ const Customers = () => {
 					</div>
 				)}
 			</div>
-
-			{customers.length > 0 && (
-				<div className="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-					<div className="text-sm text-gray-700">
-						Showing{' '}
-						<span className="font-medium">{sortedCustomers.length}</span> of{' '}
-						<span className="font-medium">{customers.length}</span> customers
-					</div>
-					<div className="flex gap-2">
-						<button
-							className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 disabled:opacity-50"
-							disabled={true}
-						>
-							Previous
-						</button>
-						<button
-							className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 disabled:opacity-50"
-							disabled={true}
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			)}
-
 			{/* Edit Customer Modal */}
 			{editingCustomer && (
 				<EditCustomerModal
@@ -411,7 +316,7 @@ const Customers = () => {
 					onUpdate={handleUpdateCustomer}
 				/>
 			)}
-		</div>
+		</>
 	);
 };
 

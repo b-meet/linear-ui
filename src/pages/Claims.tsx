@@ -22,7 +22,12 @@ const Claims = () => {
 
 	return (
 		<>
-			<PageHeader onFilterClick={toggleModal} />
+			<PageHeader
+				heading="Search claims"
+				subHeading="Search for claims by claim ID, patient name, or other criteria."
+				searchPlaceholder="Search by claim ID, patient name, etc."
+				onFilterClick={toggleModal}
+			/>
 			{viewMode === VIEW_MODES.LIST && <ResultTable />}
 			{viewMode === VIEW_MODES.GRID && <GridViewContainer />}
 			<ClaimFilterModal

@@ -149,7 +149,7 @@ const GridViewContainer = () => {
 				{sampleClaims.map((claim) => (
 					<div
 						key={claim.id}
-						className="bg-white min-w-[375px] rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden"
+						className="bg-white min-w-[325px] rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden"
 					>
 						<div
 							className={`h-1 ${claim.claimStatusByCompany === 'accepted' ? 'bg-green-500' : claim.claimStatusByCompany === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'}`}
