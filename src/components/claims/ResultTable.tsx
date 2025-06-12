@@ -61,6 +61,7 @@ const ResultTable = () => {
 		() => ({
 			flex: 1,
 			hide: false,
+			filter: false,
 		}),
 		[]
 	);

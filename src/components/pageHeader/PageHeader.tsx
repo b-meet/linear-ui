@@ -41,8 +41,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 				<h1 className="text-2xl font-semibold text-gray-900">{heading}</h1>
 				<p className="text-gray-600 text-sm">{subHeading}</p>
 			</div>
-			<section className="flex justify-between items-center">
-				<div className="flex gap-2 mb-2">
+			<section className="flex justify-between items-center mb-2">
+				<div className="flex gap-2">
 					{showFilter && (
 						<button
 							onClick={onFilterClick}

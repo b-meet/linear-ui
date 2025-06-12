@@ -144,7 +144,7 @@ const GridViewContainer = () => {
 	};
 
 	return (
-		<div className="flex max-h-[calc(100vh_-_150px)] overflow-auto py-5 w-full relative">
+		<div className="flex max-h-[calc(100vh_-_150px)] overflow-auto w-full relative">
 			<div className="flex flex-wrap items-start gap-4">
 				{sampleClaims.map((claim) => (
 					<div
