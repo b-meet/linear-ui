@@ -3,11 +3,14 @@ import {AgGridReact} from 'ag-grid-react';
 import {themeAlpine, ColDef} from 'ag-grid-community';
 import {getClaimsData} from './dataSource';
 import {Claim} from './types';
-import {apiClaimColDefs} from './fields/defaults';
 import {API_ROUTES} from '../../utility/constant';
 import {ICellRendererParams} from 'ag-grid-community';
 import {FiDownload} from 'react-icons/fi';
 import {API_BASE_URL} from '../../utility/environment';
+import {onRowClicked} from '.';
+import {apiClaimColDefs} from './defaults';
+import AddClaims from '../../pages/AddClaims';
+import {CgClose} from 'react-icons/cg';
 
 export const CustomActionsRenderer = (params: ICellRendererParams) => {
 	const downloadAcknowledgement = async (id: string | number) => {
@@ -44,6 +47,7 @@ const ResultTable = () => {
 		},
 	]);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
+	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
 	const [rowData, setRowData] = useState<Claim[]>([]);
 	const [columnVisibility, setColumnVisibility] = useState<
 		Record<string, boolean>
@@ -118,8 +122,9 @@ const ResultTable = () => {
 	}, []);
 
 	return (
-		<div className="flex h-[calc(100vh_-_135px)] w-full relative">
+		<div className="flex h-[calc(100vh_-_135px)] w-full">
 			<div className="flex flex-row-reverse flex-1">
+				{/* column switcher */}
 				<div className="relative w-8 rounded-tl-md rounded-tr-md">
 					<button
 						onClick={toggleSidebar}
@@ -128,7 +133,6 @@ const ResultTable = () => {
 						Columns
 					</button>
 				</div>
-
 				{sidebarVisible && (
 					<div className="w-56 border border-[#D9D9D9] border-l-0 bg-brand-light py-2 px-4 overflow-y-auto">
 						<div className="font-semibold py-2">Toggle Columns</div>
@@ -155,14 +159,35 @@ const ResultTable = () => {
 					</div>
 				)}
 
+				{/* claims form for editing */}
+				{isClaimWindowOpen && (
+					<section className="absolute top-0 bottom-0 right-0 w-full z-50 drop-shadow-lg flex justify-end bg-black/50">
+						<div className="w-[575px] bg-white">
+							<div className="p-4">
+								<h2 className="text-xl font-semibold mb-4">Edit Claim</h2>
+								<AddClaims showHeader={false} />
+								<button
+									onClick={() => setIsClaimWindowOpen(false)}
+									className="absolute top-4 right-[585px] bg-white hover:bg-brand text-black hover:text-white p-1.5 rounded cursor-pointer"
+								>
+									<CgClose />
+								</button>
+							</div>
+						</div>
+					</section>
+				)}
+
 				<div className="flex-1">
 					<AgGridReact
 						ref={gridRef}
+						singleClickEdit
 						rowData={rowData}
 						columnDefs={columnDefs}
 						theme={customeTheme}
 						defaultColDef={defaultColDef}
-						singleClickEdit
+						onRowClicked={(params) =>
+							onRowClicked(params, setIsClaimWindowOpen)
+						}
 					/>
 				</div>
 			</div>

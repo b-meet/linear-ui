@@ -13,16 +13,20 @@ import {
 } from '../redux/slices/claimsFormSlice';
 import {storageServices} from '../utility/storageServices';
 import {FormSection, STORAGE_SERVICES} from '../type';
-import {FaArrowLeft} from 'react-icons/fa';
 import {useNavigate} from 'react-router';
 import CustomerDetails from '../components/forms/CustomerDetails';
 import TyreDetails from '../components/forms/TyreDetails';
 import VehicleDetails from '../components/forms/VehicleDetails';
 import Issuance from '../components/forms/Issuance';
+import PageHeader from '../components/pageHeader/PageHeader';
 
 const CLAIMS_FORM_STORAGE_KEY = 'claimsFormData';
 
-const AddClaims = () => {
+interface AddClaimsProps {
+	showHeader?: boolean;
+}
+
+const AddClaims = ({showHeader = true}: AddClaimsProps) => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const customerDetails = useAppSelector(selectClaimsCustomerDetails);
@@ -166,10 +170,6 @@ const AddClaims = () => {
 	const handleVehicleDetailsChange = createInputChangeHandler('vehicleDetails');
 	const handleIssuanceChange = createInputChangeHandler('issuance');
 
-	const handleStepBack = () => {
-		navigate(-1);
-	};
-
 	const renderActiveForm = () => {
 		switch (activeSection) {
 			case 'customerDetails':
@@ -215,17 +215,17 @@ const AddClaims = () => {
 
 	return (
 		<>
-			<button
-				onClick={handleStepBack}
-				className="flex items-center gap-2 text-slate-600 rounded-md cursor-pointer hover:text-slate-900"
-			>
-				<FaArrowLeft className="text-xs" />
-				<h1 className="text-xl font-medium">Add Claims</h1>
-			</button>
-			<p className="text-xs text-slate-500 mb-2">
-				Required fields are marked with *
-			</p>
-			<section className="flex gap-4 h-[92%]">
+			{showHeader && (
+				<PageHeader
+					heading="Add Claims"
+					subHeading="Required fields are marked with *"
+					showFilter={false}
+					showViewSwitcher={false}
+					totalCount={false}
+					showSearch={false}
+				/>
+			)}
+			<section className="flex gap-4 h-[88%]">
 				<div className="flex-2 bg-white shadow-sm rounded-md pb-4 w-full overflow-clip">
 					{renderActiveForm()}
 				</div>

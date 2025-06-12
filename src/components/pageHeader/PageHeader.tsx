@@ -12,9 +12,10 @@ interface PageHeaderProps {
 	heading: string;
 	subHeading?: string;
 	showFilter?: boolean;
+	showSearch?: boolean;
 	showViewSwitcher?: boolean;
 	searchPlaceholder?: string;
-	totalCount?: number | string;
+	totalCount?: number | boolean;
 	onFilterClick?: () => void;
 }
 
@@ -22,9 +23,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 	heading,
 	subHeading,
 	showFilter = true,
+	showSearch = true,
 	showViewSwitcher = true,
 	searchPlaceholder,
-	totalCount = true,
+	totalCount = false,
 	onFilterClick,
 }) => {
 	const dispatch = useAppDispatch();
@@ -51,23 +53,25 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 							<IoFilterSharp /> Filters ({appliedFiltersCount})
 						</button>
 					)}
-					<form>
-						<div className="flex items-center gap-2">
-							<input
-								type="text"
-								id="claimId"
-								name="claimId"
-								placeholder={searchPlaceholder}
-								className="border border-slate-400 px-3 py-2 w-96 rounded-sm"
-							/>
-							<button
-								type="submit"
-								className="bg-brand text-white py-[9px] px-3 rounded-sm hover:bg-brand-darker"
-							>
-								Search
-							</button>
-						</div>
-					</form>
+					{showSearch && (
+						<form>
+							<div className="flex items-center gap-2">
+								<input
+									type="text"
+									id="claimId"
+									name="claimId"
+									placeholder={searchPlaceholder}
+									className="border border-slate-400 px-3 py-2 w-96 rounded-sm"
+								/>
+								<button
+									type="submit"
+									className="bg-brand text-white py-[9px] px-3 rounded-sm hover:bg-brand-darker"
+								>
+									Search
+								</button>
+							</div>
+						</form>
+					)}
 				</div>
 				<div className="flex items-center gap-3">
 					{totalCount && (

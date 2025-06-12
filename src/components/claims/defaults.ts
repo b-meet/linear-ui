@@ -1,7 +1,7 @@
 import {ColDef} from 'ag-grid-community';
-import {Claim} from '../types';
-import ClaimStatusRenderer from './ClaimStatus';
-import EditableColHeader from './EditableColHeader';
+import EditableColHeader from './fields/EditableColHeader';
+import ClaimStatusRenderer from './fields/ClaimStatus';
+import {Claim} from './types';
 
 const formatDate = (dateString: string | null | undefined): string => {
 	if (!dateString) return '';

@@ -24,8 +24,8 @@ const Claims = () => {
 		<>
 			<PageHeader
 				heading="Search claims"
-				subHeading="Search for claims by claim ID, patient name, or other criteria."
-				searchPlaceholder="Search by claim ID, patient name, etc."
+				subHeading="Search for claims by claim ID, Customer name, or other criteria."
+				searchPlaceholder="Search by claim ID, name, docket, etc."
 				onFilterClick={toggleModal}
 			/>
 			{viewMode === VIEW_MODES.LIST && <ResultTable />}
