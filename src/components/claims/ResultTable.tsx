@@ -11,6 +11,7 @@ import {onRowClicked} from '.';
 import {apiClaimColDefs} from './defaults';
 import AddClaims from '../../pages/AddClaims';
 import {CgClose} from 'react-icons/cg';
+import {useAppDispatch} from '../../hooks/redux';
 
 export const CustomActionsRenderer = (params: ICellRendererParams) => {
 	const downloadAcknowledgement = async (id: string | number) => {
@@ -32,6 +33,7 @@ export const CustomActionsRenderer = (params: ICellRendererParams) => {
 };
 
 const ResultTable = () => {
+	const dispatch = useAppDispatch();
 	const gridRef = useRef<AgGridReact | null>(null);
 	const [columnDefs, setColumnDefs] = useState<ColDef[]>([
 		...apiClaimColDefs,
@@ -186,7 +188,7 @@ const ResultTable = () => {
 						theme={customeTheme}
 						defaultColDef={defaultColDef}
 						onRowClicked={(params) =>
-							onRowClicked(params, setIsClaimWindowOpen)
+							onRowClicked(params, setIsClaimWindowOpen, dispatch)
 						}
 					/>
 				</div>
