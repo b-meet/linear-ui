@@ -11,8 +11,12 @@ import {
 } from 'react-icons/fa';
 import {useAppSelector, useAppDispatch} from '../../../hooks/redux';
 import {fetchClaimsData} from '../../../redux/slices/claimsDataSlice';
+import {initializeForm} from '../../../redux/slices/claimsFormSlice';
+import {GridViewContainerProps, Claim} from '../types';
+import {TyreCompany} from '../../../utility/constant';
+import {ClaimsFormState} from '../../../redux/slices/claimsFormSlice';
 
-const GridViewContainer = () => {
+const GridViewContainer = ({setIsClaimWindowOpen}: GridViewContainerProps) => {
 	const dispatch = useAppDispatch();
 	const {claimsData, loading, error} = useAppSelector(
 		(state) => state.claimsData
@@ -24,6 +28,49 @@ const GridViewContainer = () => {
 			dispatch(fetchClaimsData());
 		}
 	}, [dispatch, claimsData.length, loading]);
+
+	const mapClaimToFormState = (claim: Claim): ClaimsFormState => {
+		return {
+			customerDetails: {
+				customerName: claim.customerId?.name || '',
+				customerNumber: claim.customerId?.mobileNumber || '',
+				billDate: claim.billDate || '',
+				billNumber: claim.billNumber || '',
+				docketNumber: claim.docketNumber || '',
+				leadRelation: claim.leadRelation || '',
+				complaintDetails: claim.complaintDetails || '',
+				additionalRemarks: claim.additionalRemarks || '',
+			},
+			tyreDetails: {
+				warrentyDetails: claim.warrentyDetails || '',
+				tyreSerialNumber: claim.tyreSerialNumber || '',
+				tyrePattern: claim.tyrePattern || '',
+				tyreSize: claim.tyreSize || '',
+				tyreSentDate: claim.tyreSentDate || null,
+				tyreSentThrough: claim.tyreSentThrough || '',
+				tyreCompany: (claim.tyreCompany as TyreCompany) || '',
+				tyreImg: claim.tyreImg || [],
+			},
+			vehicleDetails: {
+				vehicleNumber: claim.vehicleNumber || '',
+				type: claim.vehicleType || '',
+				distanceCovered: claim.distanceCovered || '',
+			},
+			issuance: {
+				depreciationAmt: claim.depreciationAmt || '',
+				claimStatusByCompany: claim.claimStatusByCompany || 'pending',
+				returnToCustomerDt: claim.returnToCustomerDt || null,
+				finalClaimStatus: claim.finalClaimStatus || false,
+			},
+		};
+	};
+
+	const handleClaimClick = (claim: Claim) => {
+		const formState = mapClaimToFormState(claim);
+		dispatch(initializeForm(formState));
+		setIsClaimWindowOpen(true);
+		console.log('Editing claim:', claim);
+	};
 	const getStatusIcon = (status: string) => {
 		switch (status) {
 			case 'accepted':
@@ -94,7 +141,8 @@ const GridViewContainer = () => {
 				{claimsData.map((claim) => (
 					<div
 						key={claim._id}
-						className="bg-white min-w-[325px] rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden"
+						onClick={() => handleClaimClick(claim)}
+						className="bg-white min-w-[325px] rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer"
 					>
 						<div
 							className={`h-1 ${claim.claimStatusByCompany === 'accepted' ? 'bg-green-500' : claim.claimStatusByCompany === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'}`}

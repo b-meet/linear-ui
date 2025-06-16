@@ -7,10 +7,9 @@ import {FiDownload} from 'react-icons/fi';
 import {API_BASE_URL} from '../../utility/environment';
 import {onRowClicked} from '.';
 import {apiClaimColDefs} from './defaults';
-import AddClaims from '../../pages/AddClaims';
-import {CgClose} from 'react-icons/cg';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {fetchClaimsData} from '../../redux/slices/claimsDataSlice';
+import {ResultTableProps} from './types';
 
 export const CustomActionsRenderer = (params: ICellRendererParams) => {
 	const downloadAcknowledgement = async (id: string | number) => {
@@ -31,7 +30,7 @@ export const CustomActionsRenderer = (params: ICellRendererParams) => {
 	);
 };
 
-const ResultTable = () => {
+const ResultTable = ({setIsClaimWindowOpen}: ResultTableProps) => {
 	const dispatch = useAppDispatch();
 	const {claimsData, loading, error} = useAppSelector(
 		(state) => state.claimsData
@@ -51,7 +50,6 @@ const ResultTable = () => {
 		},
 	]);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
-	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
 	const [columnVisibility, setColumnVisibility] = useState<
 		Record<string, boolean>
 	>(() => {
@@ -160,24 +158,6 @@ const ResultTable = () => {
 							);
 						})}
 					</div>
-				)}
-
-				{/* claims form for editing */}
-				{isClaimWindowOpen && (
-					<section className="absolute top-0 bottom-0 right-0 w-full z-50 drop-shadow-lg flex justify-end bg-black/50">
-						<div className="w-[575px] bg-white">
-							<div className="p-4">
-								<h2 className="text-xl font-semibold mb-4">Edit Claim</h2>
-								<AddClaims showHeader={false} />
-								<button
-									onClick={() => setIsClaimWindowOpen(false)}
-									className="absolute top-4 right-[585px] bg-white hover:bg-brand text-black hover:text-white p-1.5 rounded cursor-pointer"
-								>
-									<CgClose />
-								</button>
-							</div>
-						</div>
-					</section>
 				)}
 
 				<div className="flex-1">

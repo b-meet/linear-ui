@@ -1,5 +1,4 @@
 import {ColDef} from 'ag-grid-community';
-import EditableColHeader from './fields/EditableColHeader';
 import ClaimStatusRenderer from './fields/ClaimStatus';
 import {Claim} from './types';
 
@@ -85,14 +84,10 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		minWidth: 150,
 	},
 	{
-		headerComponent: EditableColHeader,
-		headerComponentParams: {
-			displayName: 'Tyre Sent Through',
-		},
+		headerName: 'Tyre Sent Through',
 		field: 'tyreSentThrough',
 		sortable: true,
 		minWidth: 150,
-		editable: true,
 	},
 	{
 		headerName: 'Tyre Serial Number',
@@ -137,15 +132,11 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		minWidth: 150,
 	},
 	{
-		headerComponent: EditableColHeader,
-		headerComponentParams: {
-			displayName: 'Tyre Sent Date',
-		},
+		headerComponent: 'Tyre Sent Date',
 		field: 'tyreSentDate',
 		sortable: true,
 		minWidth: 150,
 		valueFormatter: (params) => formatDate(params.value),
-		editable: true,
 		cellEditor: 'agDateCellEditor',
 		cellEditorPopup: true,
 		valueGetter: (params) => {
@@ -174,15 +165,11 @@ export const apiClaimColDefs: ColDef<Claim>[] = [
 		valueFormatter: (params) => formatDate(params.value),
 	},
 	{
-		headerComponent: EditableColHeader,
-		headerComponentParams: {
-			displayName: 'Claim Status',
-		},
+		headerComponent: 'Claim Status',
 		field: 'claimStatusByCompany',
 		sortable: true,
 		minWidth: 150,
 		cellRenderer: ClaimStatusRenderer,
-		editable: true,
 		cellEditor: 'agSelectCellEditor',
 		cellEditorParams: {
 			values: ['accepted', 'rejected', 'pending'],

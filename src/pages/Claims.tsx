@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import ResultTable from '../components/claims/ResultTable';
 import PageHeader from '../components/pageHeader/PageHeader';
 import ClaimFilterModal, {
@@ -8,12 +8,14 @@ import {useAppSelector, useAppDispatch} from '../hooks/redux';
 import {VIEW_MODES} from '../utility/constant';
 import GridViewContainer from '../components/claims/gridView/GridViewContainer';
 import {fetchClaimsData} from '../redux/slices/claimsDataSlice';
+import EditClaimWindow from '../components/claims/EditClaimWindow';
 
 const Claims = () => {
 	const dispatch = useAppDispatch();
 	const {viewMode} = useAppSelector((state) => state.claimsFilter);
 	const {claimsData, loading} = useAppSelector((state) => state.claimsData);
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
+	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
 
 	useEffect(() => {
 		if (claimsData.length === 0 && !loading) {
@@ -38,13 +40,21 @@ const Claims = () => {
 				onFilterClick={toggleModal}
 				totalCount={claimsData.length}
 			/>
-			{viewMode === VIEW_MODES.LIST && <ResultTable />}
-			{viewMode === VIEW_MODES.GRID && <GridViewContainer />}
+			{viewMode === VIEW_MODES.LIST && (
+				<ResultTable setIsClaimWindowOpen={setIsClaimWindowOpen} />
+			)}
+			{viewMode === VIEW_MODES.GRID && (
+				<GridViewContainer setIsClaimWindowOpen={setIsClaimWindowOpen} />
+			)}
 			<ClaimFilterModal
 				isOpen={isModalOpen}
 				onClose={toggleModal}
 				onApplyFilters={applyFilters}
 			/>
+			{/* claims form for editing */}
+			{isClaimWindowOpen && (
+				<EditClaimWindow setIsClaimWindowOpen={setIsClaimWindowOpen} />
+			)}
 		</>
 	);
 };

@@ -1,3 +1,5 @@
+import {Dispatch, SetStateAction} from 'react';
+
 export interface Customer {
 	_id: string;
 	userId: string;
@@ -36,4 +38,16 @@ export interface Claim {
 export interface IGetClaimResponse {
 	message: string;
 	data: Claim[];
+}
+
+export interface EditClaimWindowProps {
+	setIsClaimWindowOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface ResultTableProps {
+	setIsClaimWindowOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface GridViewContainerProps {
+	setIsClaimWindowOpen: Dispatch<SetStateAction<boolean>>;
 }
