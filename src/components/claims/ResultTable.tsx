@@ -1,8 +1,6 @@
 import {useState, useRef, useCallback, useMemo, useEffect} from 'react';
 import {AgGridReact} from 'ag-grid-react';
 import {themeAlpine, ColDef} from 'ag-grid-community';
-import {getClaimsData} from './dataSource';
-import {Claim} from './types';
 import {API_ROUTES} from '../../utility/constant';
 import {ICellRendererParams} from 'ag-grid-community';
 import {FiDownload} from 'react-icons/fi';
@@ -11,7 +9,8 @@ import {onRowClicked} from '.';
 import {apiClaimColDefs} from './defaults';
 import AddClaims from '../../pages/AddClaims';
 import {CgClose} from 'react-icons/cg';
-import {useAppDispatch} from '../../hooks/redux';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {fetchClaimsData} from '../../redux/slices/claimsDataSlice';
 
 export const CustomActionsRenderer = (params: ICellRendererParams) => {
 	const downloadAcknowledgement = async (id: string | number) => {
@@ -34,6 +33,9 @@ export const CustomActionsRenderer = (params: ICellRendererParams) => {
 
 const ResultTable = () => {
 	const dispatch = useAppDispatch();
+	const {claimsData, loading, error} = useAppSelector(
+		(state) => state.claimsData
+	);
 	const gridRef = useRef<AgGridReact | null>(null);
 	const [columnDefs, setColumnDefs] = useState<ColDef[]>([
 		...apiClaimColDefs,
@@ -50,7 +52,6 @@ const ResultTable = () => {
 	]);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
 	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
-	const [rowData, setRowData] = useState<Claim[]>([]);
 	const [columnVisibility, setColumnVisibility] = useState<
 		Record<string, boolean>
 	>(() => {
@@ -103,25 +104,25 @@ const ResultTable = () => {
 	}, [sidebarVisible]);
 
 	useEffect(() => {
-		const getClaims = async () => {
-			try {
-				const response = await getClaimsData();
-				if (response && Array.isArray(response.data)) {
-					setRowData(response.data);
-				} else {
-					console.error(
-						'Fetched data is not in the expected format:',
-						response
-					);
-					setRowData([]);
-				}
-			} catch (error) {
-				console.error('Error fetching claims data:', error);
-			}
-		};
+		dispatch(fetchClaimsData());
+	}, [dispatch]);
 
-		getClaims();
-	}, []);
+	if (error) {
+		return (
+			<div className="flex h-[calc(100vh_-_135px)] w-full items-center justify-center">
+				<div className="text-red-500 text-center">
+					<p className="text-lg font-semibold">Error loading claims data</p>
+					<p className="text-sm">{error}</p>
+					<button
+						onClick={() => dispatch(fetchClaimsData())}
+						className="mt-4 px-4 py-2 bg-brand text-white rounded hover:bg-brand-hover"
+					>
+						Retry
+					</button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex h-[calc(100vh_-_135px)] w-full">
@@ -183,10 +184,11 @@ const ResultTable = () => {
 					<AgGridReact
 						ref={gridRef}
 						singleClickEdit
-						rowData={rowData}
+						rowData={claimsData}
 						columnDefs={columnDefs}
 						theme={customeTheme}
 						defaultColDef={defaultColDef}
+						loading={loading}
 						onRowClicked={(params) =>
 							onRowClicked(params, setIsClaimWindowOpen, dispatch)
 						}

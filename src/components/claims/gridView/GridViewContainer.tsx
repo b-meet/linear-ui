@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import {
 	FaCalendarAlt,
 	FaUser,
@@ -8,107 +9,21 @@ import {
 	FaClock,
 	FaCar,
 } from 'react-icons/fa';
-
-const sampleClaims = [
-	{
-		id: 1,
-		billNumber: 'BL-2024-001',
-		customerId: {name: 'John Smith', mobileNumber: '+1-555-0123'},
-		billDate: '2024-03-15',
-		tyreCompany: 'Michelin',
-		vehicleNumber: 'MH-12-AB-1234',
-		claimStatusByCompany: 'accepted',
-		finalClaimStatus: true,
-		complaintDetails: 'Premature wear on front tyre',
-		docketNumber: 'DOC-2024-001',
-	},
-	{
-		id: 2,
-		billNumber: 'BL-2024-002',
-		customerId: {name: 'Sarah Johnson', mobileNumber: '+1-555-0456'},
-		billDate: '2024-03-18',
-		tyreCompany: 'Bridgestone',
-		vehicleNumber: 'MH-14-CD-5678',
-		claimStatusByCompany: 'pending',
-		finalClaimStatus: false,
-		complaintDetails: 'Sidewall damage within warranty period',
-		docketNumber: 'DOC-2024-002',
-	},
-	{
-		id: 3,
-		billNumber: 'BL-2024-003',
-		customerId: {name: 'Michael Brown', mobileNumber: '+1-555-0789'},
-		billDate: '2024-03-20',
-		tyreCompany: 'Continental',
-		vehicleNumber: 'MH-16-EF-9012',
-		claimStatusByCompany: 'rejected',
-		finalClaimStatus: false,
-		complaintDetails: 'Tread separation issue',
-		docketNumber: 'DOC-2024-003',
-	},
-	{
-		id: 4,
-		billNumber: 'BL-2024-004',
-		customerId: {name: 'Emily Davis', mobileNumber: '+1-555-0321'},
-		billDate: '2024-03-22',
-		tyreCompany: 'Goodyear',
-		vehicleNumber: 'MH-18-GH-3456',
-		claimStatusByCompany: 'accepted',
-		finalClaimStatus: true,
-		complaintDetails: 'Manufacturing defect in rubber compound',
-		docketNumber: 'DOC-2024-004',
-	},
-	{
-		id: 5,
-		billNumber: 'BL-2024-005',
-		customerId: {name: 'David Wilson', mobileNumber: '+1-555-0654'},
-		billDate: '2024-03-25',
-		tyreCompany: 'Pirelli',
-		vehicleNumber: 'MH-20-IJ-7890',
-		claimStatusByCompany: 'pending',
-		finalClaimStatus: false,
-		complaintDetails: 'Irregular wear pattern',
-		docketNumber: 'DOC-2024-005',
-	},
-	{
-		id: 6,
-		billNumber: 'BL-2024-006',
-		customerId: {name: 'Lisa Anderson', mobileNumber: '+1-555-0987'},
-		billDate: '2024-03-28',
-		tyreCompany: 'Michelin',
-		vehicleNumber: 'MH-22-KL-1234',
-		claimStatusByCompany: 'accepted',
-		finalClaimStatus: true,
-		complaintDetails: 'Valve stem failure',
-		docketNumber: 'DOC-2024-006',
-	},
-	{
-		id: 7,
-		billNumber: 'BL-2024-007',
-		customerId: {name: 'Robert Taylor', mobileNumber: '+1-555-0111'},
-		billDate: '2024-03-30',
-		tyreCompany: 'Bridgestone',
-		vehicleNumber: 'MH-24-MN-2468',
-		claimStatusByCompany: 'pending',
-		finalClaimStatus: false,
-		complaintDetails: 'Puncture resistance issue',
-		docketNumber: 'DOC-2024-007',
-	},
-	{
-		id: 8,
-		billNumber: 'BL-2024-008',
-		customerId: {name: 'Jessica White', mobileNumber: '+1-555-0222'},
-		billDate: '2024-04-01',
-		tyreCompany: 'Continental',
-		vehicleNumber: 'MH-26-OP-3579',
-		claimStatusByCompany: 'accepted',
-		finalClaimStatus: true,
-		complaintDetails: 'Bead wire failure',
-		docketNumber: 'DOC-2024-008',
-	},
-];
+import {useAppSelector, useAppDispatch} from '../../../hooks/redux';
+import {fetchClaimsData} from '../../../redux/slices/claimsDataSlice';
 
 const GridViewContainer = () => {
+	const dispatch = useAppDispatch();
+	const {claimsData, loading, error} = useAppSelector(
+		(state) => state.claimsData
+	);
+
+	useEffect(() => {
+		// Only fetch if we don't have data yet
+		if (claimsData.length === 0 && !loading) {
+			dispatch(fetchClaimsData());
+		}
+	}, [dispatch, claimsData.length, loading]);
 	const getStatusIcon = (status: string) => {
 		switch (status) {
 			case 'accepted':
@@ -143,12 +58,42 @@ const GridViewContainer = () => {
 		});
 	};
 
+	// Display error if there's an error
+	if (error) {
+		return (
+			<div className="flex h-[calc(100vh_-_150px)] w-full items-center justify-center">
+				<div className="text-red-500 text-center">
+					<p className="text-lg font-semibold">Error loading claims data</p>
+					<p className="text-sm">{error}</p>
+					<button
+						onClick={() => dispatch(fetchClaimsData())}
+						className="mt-4 px-4 py-2 bg-brand text-white rounded hover:bg-brand-hover"
+					>
+						Retry
+					</button>
+				</div>
+			</div>
+		);
+	}
+
+	// Display loading state
+	if (loading) {
+		return (
+			<div className="flex h-[calc(100vh_-_150px)] w-full items-center justify-center">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
+					<p className="text-gray-600">Loading claims...</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex max-h-[calc(100vh_-_150px)] overflow-auto w-full relative">
 			<div className="flex flex-wrap items-start gap-4">
-				{sampleClaims.map((claim) => (
+				{claimsData.map((claim) => (
 					<div
-						key={claim.id}
+						key={claim._id}
 						className="bg-white min-w-[325px] rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden"
 					>
 						<div
@@ -190,11 +135,11 @@ const GridViewContainer = () => {
 								<div className="flex items-center gap-2">
 									<FaCar className="w-4 h-4 text-gray-400" />
 									<p className="text-sm font-medium text-gray-900">
-										{claim.vehicleNumber}
+										{claim.vehicleNumber || 'N/A'}
 									</p>
 								</div>
 								<p className="text-xs text-gray-600 font-medium truncate ml-2">
-									{claim.tyreCompany}
+									{claim.tyreCompany || 'N/A'}
 								</p>
 							</div>
 
@@ -221,7 +166,7 @@ const GridViewContainer = () => {
 				))}
 			</div>
 
-			{sampleClaims.length === 0 && (
+			{claimsData.length === 0 && !loading && (
 				<div className="text-center py-12">
 					<FaFileAlt className="w-12 h-12 text-gray-400 mx-auto mb-4" />
 					<h3 className="text-lg font-medium text-gray-900 mb-2">
