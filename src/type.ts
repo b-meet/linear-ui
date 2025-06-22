@@ -51,3 +51,16 @@ export interface IUserData {
 	email: string;
 	organisationName: string;
 }
+
+// AG Grid State Types
+export interface IGridState {
+	columnState: unknown[];
+	columnGroupState?: unknown[];
+	sortModel?: unknown[];
+	filterModel?: unknown;
+}
+
+// Storage keys for grid state
+export const GRID_STORAGE_KEYS = {
+	CLAIMS_GRID_STATE: 'claims_grid_state',
+} as const;

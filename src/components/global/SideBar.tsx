@@ -14,6 +14,7 @@ import {storageServices} from '../../utility/storageServices';
 import {STORAGE_SERVICES} from '../../type';
 import {useAppDispatch} from '../../hooks/redux';
 import {userActions} from '../../redux/slices/userSlice/userSlice';
+import {FaPowerOff} from 'react-icons/fa6';
 
 const SideBar = () => {
 	const navigate = useNavigate();
@@ -122,13 +123,13 @@ const SideBar = () => {
 						{showUserDropdown && (
 							<div className="absolute bottom-full left-0 mb-2 w-full bg-white border border-gray-200 rounded-md shadow-md z-10">
 								<button
-									className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+									className="flex items-center gap-2 w-full bg-red-50 text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-100 cursor-pointer"
 									onClick={() => {
 										setShowLogoutModal(true);
 										setShowUserDropdown(false);
 									}}
 								>
-									Logout
+									<FaPowerOff /> Logout
 								</button>
 							</div>
 						)}
