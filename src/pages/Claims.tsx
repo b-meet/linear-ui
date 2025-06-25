@@ -13,15 +13,17 @@ import EditClaimWindow from '../components/claims/EditClaimWindow';
 const Claims = () => {
 	const dispatch = useAppDispatch();
 	const {viewMode} = useAppSelector((state) => state.claimsFilter);
-	const {claimsData, loading} = useAppSelector((state) => state.claimsData);
+	const {claimsData, loading, error} = useAppSelector(
+		(state) => state.claimsData
+	);
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
 	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
 
 	useEffect(() => {
-		if (claimsData.length === 0 && !loading) {
+		if (claimsData.length === 0 && !loading && !error) {
 			dispatch(fetchClaimsData());
 		}
-	}, [dispatch, claimsData.length, loading]);
+	}, [dispatch, claimsData.length, loading, error]);
 
 	const toggleModal = () => {
 		setIsModalOpen(!isModalOpen);

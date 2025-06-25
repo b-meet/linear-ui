@@ -3,12 +3,14 @@ export const API_ROUTES = {
 	REGISTER: '/api/user/register',
 	FORGOT_PASSWORD: '/api/user/forgot-password',
 	VERIFY_OTP: '/api/user/verify-otp',
-	SAVE_APP: '/api/claims/addClaim',
-	ADD_CLAIMS: '/api/claims/addClaim',
-	GET_CLAIMS: '/api/claims/getClaims',
-	GET_SINGLE_CLAIM: '/api/claims/getClaim',
-	GET_CUSTOMER: 'api/customers/getCustomers',
-	GET_CLAIM_CUSTOMER_PDF: 'api/claims/getClaimPdf',
+
+	SAVE_APP: '/api/claims/add-claim',
+	ADD_CLAIMS: '/api/claims/add-claim',
+	GET_CLAIMS: '/api/claims/get-claims',
+	GET_SINGLE_CLAIM: '/api/claims/get-claim',
+	GET_CLAIM_CUSTOMER_PDF: 'api/claims/get-claim-pdf',
+
+	GET_CUSTOMER: 'api/customers/get-customers',
 };
 
 export const TYRE_COMPANIES = [

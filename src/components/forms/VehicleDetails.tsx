@@ -3,6 +3,7 @@ import {VehicleDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 import {apiAuth} from '../../api/services';
 import {toast} from 'react-toastify';
+import {API_ROUTES} from '../../utility/constant';
 
 interface ValidationErrors {
 	vehicleNumber?: string;
@@ -89,7 +90,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 				};
 				try {
 					await apiAuth.post(
-						`/api/claims/addClaim/${claimId}/${tabId}`,
+						`${API_ROUTES.SAVE_APP}/${claimId}/${tabId}`,
 						payload
 					);
 					toast.success('Vehicle Details saved successfully');

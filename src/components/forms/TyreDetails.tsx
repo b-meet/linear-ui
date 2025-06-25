@@ -3,7 +3,7 @@ import {TyreDetailsState} from '../../redux/slices/claimsFormSlice';
 import {debounce} from '../../utility/debounce';
 import {apiAuth} from '../../api/services';
 import {toast} from 'react-toastify';
-import {TYRE_COMPANIES} from '../../utility/constant';
+import {API_ROUTES, TYRE_COMPANIES} from '../../utility/constant';
 
 interface ValidationErrors {
 	warrentyDetails?: string;
@@ -125,7 +125,7 @@ const TyreDetails: React.FC<TyreDetailsProps> = ({
 				};
 				try {
 					await apiAuth.post(
-						`/api/claims/addClaim/${claimId}/${tabId}`,
+						`${API_ROUTES.SAVE_APP}/${claimId}/${tabId}`,
 						payload
 					);
 					toast.success('Tyre Details saved successfully');

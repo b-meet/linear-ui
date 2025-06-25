@@ -6,6 +6,7 @@ import {apiAuth} from '../../api/services';
 import {toast} from 'react-toastify';
 import {storageServices} from '../../utility/storageServices';
 import {STORAGE_SERVICES} from '../../type';
+import {API_ROUTES} from '../../utility/constant';
 
 interface IssuanceProps {
 	details: IssuanceState;
@@ -84,7 +85,7 @@ const Issuance: React.FC<IssuanceProps> = ({
 			finalClaimStatus: localDetails.finalClaimStatus,
 		};
 		try {
-			await apiAuth.post(`/api/claims/addClaim/${claimId}/${tabId}`, payload);
+			await apiAuth.post(`${API_ROUTES.SAVE_APP}/${claimId}/${tabId}`, payload);
 			toast.success('Issuance Details saved successfully');
 			dispatch(resetForm());
 			storageServices.set(STORAGE_SERVICES.SESSION, 'claimsForm'); // Attempt to clear session storage
