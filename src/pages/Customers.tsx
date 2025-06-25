@@ -28,9 +28,7 @@ const Customers = () => {
 	useEffect(() => {
 		const fetchCustomers = async () => {
 			try {
-				const response = await apiAuth.get(
-					`${API_ROUTES.GET_CUSTOMER}?name=''&mobile=''`
-				);
+				const response = await apiAuth.get(`${API_ROUTES.GET_CUSTOMER}`);
 				setCustomers(response.data);
 			} catch (err: any) {
 				setError(err.message || 'Failed to fetch customers');

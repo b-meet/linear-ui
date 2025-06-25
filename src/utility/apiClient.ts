@@ -14,7 +14,7 @@ apiClient.interceptors.request.use(
 	(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
 		const token = storageServices.get(STORAGE_SERVICES.LOCAL, 'authToken');
 		if (token) {
-			config.headers.Authorization = `${token}`;
+			config.headers.Authorization = `Bearer ${token}`;
 		}
 		return config;
 	},

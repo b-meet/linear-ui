@@ -20,7 +20,7 @@ const Claims = () => {
 	const [isClaimWindowOpen, setIsClaimWindowOpen] = useState(false);
 
 	useEffect(() => {
-		if (claimsData.length === 0 && !loading && !error) {
+		if (claimsData.length < 0 && !loading && !error) {
 			dispatch(fetchClaimsData());
 		}
 	}, [dispatch, claimsData.length, loading, error]);

@@ -23,9 +23,9 @@ apiClientAuth.interceptors.request.use(
 		if (token) {
 			config.headers = config.headers || {};
 			if (typeof config.headers.set === 'function') {
-				config.headers.set('Authorization', `${token}`);
+				config.headers.set('Authorization', `Bearer ${token}`);
 			} else {
-				config.headers['Authorization'] = `${token}`;
+				config.headers['Authorization'] = `Bearer ${token}`;
 			}
 		}
 		return config;

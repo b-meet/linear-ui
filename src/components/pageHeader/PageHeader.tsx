@@ -74,10 +74,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 					)}
 				</div>
 				<div className="flex items-center gap-3">
-					{totalCount && (
+					{totalCount ? (
 						<div>
-							<p className="text-slate-700">2 results</p>
+							<p className="text-slate-700">{totalCount} results</p>
 						</div>
+					) : (
+						<></>
 					)}
 					{showViewSwitcher && (
 						<div className="flex gap-1 bg-brand-lighter rounded-sm p-1">
