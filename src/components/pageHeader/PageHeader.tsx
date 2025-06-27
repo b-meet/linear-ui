@@ -2,6 +2,7 @@ import {FaBars} from 'react-icons/fa';
 import {IoFilterSharp} from 'react-icons/io5';
 import {LuLayoutGrid} from 'react-icons/lu';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {useEffect, useRef} from 'react';
 import {
 	selectAppliedFiltersCount,
 	setViewMode,
@@ -17,6 +18,9 @@ interface PageHeaderProps {
 	searchPlaceholder?: string;
 	totalCount?: number | boolean;
 	onFilterClick?: () => void;
+	searchValue?: string;
+	onSearchInputChange?: (value: string) => void;
+	onSearchSubmit?: () => void;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
@@ -28,15 +32,24 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 	searchPlaceholder,
 	totalCount = false,
 	onFilterClick,
+	searchValue = '',
+	onSearchInputChange,
+	onSearchSubmit,
 }) => {
 	const dispatch = useAppDispatch();
 	const {viewMode} = useAppSelector((state) => state.claimsFilter);
 	const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (searchInputRef.current) {
+			searchInputRef.current.focus();
+		}
+	}, []);
 
 	const toggleViewMode = (mode: string) => {
 		dispatch(setViewMode(mode));
 	};
-
 	return (
 		<>
 			<div className="mb-2">
@@ -54,7 +67,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 						</button>
 					)}
 					{showSearch && (
-						<form>
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								onSearchSubmit?.();
+							}}
+						>
 							<div className="flex items-center gap-2">
 								<input
 									type="text"
@@ -62,6 +80,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 									name="claimId"
 									placeholder={searchPlaceholder}
 									className="border border-slate-400 px-3 py-2 w-96 rounded-sm"
+									value={searchValue}
+									onChange={(e) => onSearchInputChange?.(e.target.value)}
 								/>
 								<button
 									type="submit"

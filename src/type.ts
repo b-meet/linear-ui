@@ -64,3 +64,18 @@ export interface IGridState {
 export const GRID_STORAGE_KEYS = {
 	CLAIMS_GRID_STATE: 'claims_grid_state',
 } as const;
+
+export interface ICustomer {
+	_id: string;
+	userId: string;
+	name: string;
+	mobileNumber: string;
+	createdAt: string;
+	updatedAt?: string;
+	__v?: number;
+}
+
+export interface ICustomerResponse {
+	message: string;
+	data: ICustomer[];
+}
